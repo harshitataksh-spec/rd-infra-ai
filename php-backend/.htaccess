@@ -1,0 +1,18 @@
+# RD INFRA - Apache .htaccess
+# Domain: rd-infra.in
+
+Options -Indexes
+ServerSignature Off
+
+# Prevent directory browsing
+<IfModule mod_autoindex.c>
+  Options -Indexes
+</IfModule>
+
+# Protect database credentials and sensitive files
+<FilesMatch "(^#.*#|\.(bak|config|dist|fla|inc|ini|log|psd|sh|sql|sw[op])|~)$">
+  Require all denied
+</FilesMatch>
+
+# Enable UTF-8 encoding
+AddDefaultCharset UTF-8

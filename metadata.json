@@ -1,0 +1,8 @@
+{
+  "name": "RD INFRA | Properties, Real Estate & Investment",
+  "description": "Explore properties with RD INFRA. Discover opportunities to buy, rent, sell, and invest with a modern technology-enabled real-estate experience.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

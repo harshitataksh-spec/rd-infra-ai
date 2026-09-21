@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://rd-infra.in/sitemap.xml
