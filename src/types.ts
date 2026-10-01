@@ -121,6 +121,41 @@ export interface Lead {
   updatedAt?: string;
 }
 
+export type AdminRole = 'superadmin' | 'admin' | 'editor';
+
+export interface AdminSessionUser {
+  id: string;
+  username: string;
+  email: string;
+  fullName: string;
+  role: AdminRole;
+  avatarUrl?: string;
+  lastLogin?: string;
+}
+
+export interface AdminAuthResponse {
+  success: boolean;
+  token?: string;
+  user?: AdminSessionUser;
+  expiresAt?: string;
+  error?: string;
+  lockoutRemainingMinutes?: number;
+}
+
+export interface AdminAuditEntry {
+  id: number | string;
+  userId?: string;
+  adminName: string;
+  adminEmail?: string;
+  action: string;
+  recordType?: string;
+  affectedRecord?: string;
+  ipAddress?: string;
+  status: 'success' | 'failed' | 'warning';
+  details?: string;
+  timestamp: string;
+}
+
 export interface AdminUser {
   id: string;
   label?: 'Admin 1' | 'Admin 2' | 'Admin 3' | string;
@@ -249,4 +284,5 @@ export interface SiteSettings {
   experience_years: string;
   since_year: string;
   logo_url?: string;
+  canva_logo_link?: string;
 }

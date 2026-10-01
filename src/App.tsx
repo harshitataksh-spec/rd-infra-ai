@@ -44,6 +44,7 @@ import { ProjectModal } from './components/ProjectModal';
 import { EnquiryModal } from './components/EnquiryModal';
 import { AdminDashboard } from './components/AdminDashboard';
 import { XamppExportModal } from './components/XamppExportModal';
+import { BrandPresentationModal } from './components/BrandPresentationModal';
 
 export default function App() {
   // 1. Persistent State with localStorage fallback
@@ -130,7 +131,20 @@ export default function App() {
 
   const [settings, setSettings] = useState<SiteSettings>(() => {
     const saved = localStorage.getItem('rd_infra_settings');
-    return saved ? JSON.parse(saved) : defaultSiteSettings;
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        return {
+          ...defaultSiteSettings,
+          ...parsed,
+          logo_url: defaultSiteSettings.logo_url,
+          canva_logo_link: 'https://canva.link/ko5bhxv1zaasyoe',
+        };
+      } catch {
+        return defaultSiteSettings;
+      }
+    }
+    return defaultSiteSettings;
   });
 
   // UI state
@@ -155,6 +169,7 @@ export default function App() {
     return 'overview';
   });
   const [isXamppModalOpen, setIsXamppModalOpen] = useState(false);
+  const [isBrandModalOpen, setIsBrandModalOpen] = useState(false);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [enquiryModal, setEnquiryModal] = useState<{ isOpen: boolean; projectName?: string }>({
     isOpen: false,
@@ -232,6 +247,18 @@ export default function App() {
       window.removeEventListener('popstate', handleRouteChange);
     };
   }, []);
+
+  // Synchronize document.title for browser tab between Public Website and Admin Dashboard
+  useEffect(() => {
+    if (isAdminOpen) {
+      document.title =
+        adminTab === 'director'
+          ? 'RD INFRA | Director Profile Admin'
+          : 'RD INFRA | Admin Dashboard';
+    } else {
+      document.title = 'RD INFRA | Properties, Real Estate & Investment';
+    }
+  }, [isAdminOpen, adminTab]);
 
   // Track active section on scroll matching the exact 9 navigation items
   useEffect(() => {
@@ -437,6 +464,7 @@ export default function App() {
         onOpenEnquiry={handleOpenEnquiry}
         onOpenAdmin={() => setIsAdminOpen(true)}
         onOpenXamppGuide={() => setIsXamppModalOpen(true)}
+        onOpenBrandPresentation={() => setIsBrandModalOpen(true)}
       />
 
       {/* 1. Home / Hero & Search Section */}
@@ -535,7 +563,7 @@ export default function App() {
       />
 
       {/* Institutional Credibility & Testimonials */}
-      <WhyChooseUs />
+      <WhyChooseUs onOpenBrandModal={() => setIsBrandModalOpen(true)} />
       <TestimonialsSection testimonials={testimonials} />
 
       {/* 9. Contact & Lead Advisory Office */}
@@ -569,6 +597,7 @@ export default function App() {
         onNavigate={handleNavigate}
         onOpenAdmin={() => setIsAdminOpen(true)}
         onOpenXamppGuide={() => setIsXamppModalOpen(true)}
+        onOpenBrandPresentation={() => setIsBrandModalOpen(true)}
       />
 
       {/* Floating Action Buttons (Phone, WhatsApp, Scroll to top) */}
@@ -592,6 +621,12 @@ export default function App() {
         projectName={enquiryModal.projectName}
         onClose={() => setEnquiryModal({ isOpen: false })}
         onSuccess={handleEnquirySuccess}
+      />
+
+      {/* Official Brand Identity Presentation Modal */}
+      <BrandPresentationModal
+        isOpen={isBrandModalOpen}
+        onClose={() => setIsBrandModalOpen(false)}
       />
 
       {/* XAMPP & PHP/MySQL Architecture Modal */}

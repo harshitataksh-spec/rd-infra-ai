@@ -1,12 +1,14 @@
 import React from 'react';
-import { Phone, Mail, MapPin, Shield } from 'lucide-react';
+import { Phone, Mail, MapPin, Shield, Sparkles, ExternalLink, Lock } from 'lucide-react';
 import { SiteSettings } from '../types';
+import { RDInfraLogo } from './RDInfraLogo';
 
 interface FooterProps {
   settings: SiteSettings;
   onNavigate: (sectionId: string) => void;
   onOpenAdmin: () => void;
   onOpenXamppGuide: () => void;
+  onOpenBrandPresentation?: () => void;
 }
 
 export const Footer: React.FC<FooterProps> = ({
@@ -14,6 +16,7 @@ export const Footer: React.FC<FooterProps> = ({
   onNavigate,
   onOpenAdmin,
   onOpenXamppGuide,
+  onOpenBrandPresentation,
 }) => {
   return (
     <footer className="bg-slate-950 text-white border-t border-slate-800">
@@ -22,12 +25,7 @@ export const Footer: React.FC<FooterProps> = ({
           {/* Col 1: Brand & Tagline */}
           <div className="lg:col-span-2 space-y-4">
             <div>
-              <span className="font-heading text-2xl sm:text-3xl font-black tracking-tight text-white block">
-                RD INFRA
-              </span>
-              <p className="text-xs text-slate-400 font-semibold uppercase tracking-wider mt-1.5 block">
-                Building Better Tomorrows
-              </p>
+              <RDInfraLogo size="lg" variant="dark" />
             </div>
             <p className="text-slate-300 text-sm leading-relaxed max-w-sm mt-4">
               RD INFRA is a North Indian real estate advisory and development firm established in 2014. We specialize in premium farmhouses, strategic land investments, and plotted developments across Gurgaon, NH-48, Sohna, and Vrindavan.
@@ -35,6 +33,31 @@ export const Footer: React.FC<FooterProps> = ({
             <div className="pt-2 text-xs text-slate-400 space-y-1">
               <p><strong className="text-white">Domain:</strong> {settings.domain}</p>
               <p><strong className="text-white">Experience:</strong> 10+ Years in Real Estate</p>
+            </div>
+
+            {/* Official Canva Logo PDF Link */}
+            <div className="pt-2 flex flex-wrap items-center gap-3">
+              {onOpenBrandPresentation ? (
+                <button
+                  type="button"
+                  onClick={onOpenBrandPresentation}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-slate-700 text-blue-400 hover:text-blue-300 rounded-lg text-xs font-semibold transition-all cursor-pointer"
+                >
+                  <Sparkles className="w-3.5 h-3.5" />
+                  <span>Official Canva Logo PDF</span>
+                </button>
+              ) : (
+                <a
+                  href="https://canva.link/ko5bhxv1zaasyoe"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-slate-700 text-blue-400 hover:text-blue-300 rounded-lg text-xs font-semibold transition-all"
+                >
+                  <Sparkles className="w-3.5 h-3.5" />
+                  <span>Official Canva Logo PDF</span>
+                  <ExternalLink className="w-3 h-3 ml-0.5" />
+                </a>
+              )}
             </div>
           </div>
 
@@ -173,10 +196,10 @@ export const Footer: React.FC<FooterProps> = ({
             <span>•</span>
             <button
               onClick={onOpenAdmin}
-              className="flex items-center gap-1 text-slate-400 hover:text-white transition-colors"
+              className="flex items-center gap-1.5 text-slate-400 hover:text-white transition-colors cursor-pointer"
             >
-              <Shield className="w-3.5 h-3.5 text-blue-400" />
-              <span>Admin Portal</span>
+              <Lock className="w-3.5 h-3.5 text-amber-400" />
+              <span>Admin Lock</span>
             </button>
           </div>
         </div>

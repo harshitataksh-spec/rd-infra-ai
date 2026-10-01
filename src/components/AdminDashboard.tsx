@@ -28,6 +28,10 @@ import {
   DollarSign,
   FileSpreadsheet,
   Lock,
+  Unlock,
+  KeyRound,
+  ShieldCheck,
+  EyeOff,
   Layers,
   Award,
   Upload,
@@ -47,6 +51,7 @@ import {
   AdminUser,
 } from '../types';
 import { AdminDirectorProfile } from './AdminDirectorProfile';
+import { RDInfraLogo } from './RDInfraLogo';
 
 interface AdminDashboardProps {
   initialTab?: 'overview' | 'properties' | 'leads' | 'projects' | 'upcoming' | 'director' | 'activity' | 'settings';
@@ -95,35 +100,53 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   onExitAdmin,
   onOpenXamppGuide,
 }) => {
-  // 3 Authorized Users
+  // Authorized Administrators
   const authorizedUsers: AdminUser[] = [
     {
-      id: 'admin-1',
-      name: 'Mr. Ravinder Deshwal',
+      id: '001',
+      label: 'Admin 1',
+      name: 'Ravinder Deswal',
       email: 'ravinder@rd-infra.in',
-      role: 'Super Admin / Founder & Director',
+      role: 'Super Admin / Founder & Director (Admin 1 - 001)',
       avatarUrl: directorProfile.photoUrl,
     },
     {
-      id: 'admin-2',
+      id: '002',
+      label: 'Admin 2',
       name: 'Operations & Compliance Lead',
       email: 'operations@rd-infra.in',
-      role: 'Operations Admin',
+      role: 'Operations Admin (Admin 2 - 002)',
     },
     {
-      id: 'admin-3',
+      id: '003',
+      label: 'Admin 3',
       name: 'Strategic Sales Lead',
       email: 'sales@rd-infra.in',
-      role: 'Sales Admin',
+      role: 'Sales Admin (Admin 3 - 003)',
     },
   ];
 
-  // Auth state: starts false so secure login gate is strictly demonstrated
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(true);
-  const [currentAdmin, setCurrentAdmin] = useState<AdminUser>(authorizedUsers[0]);
-  const [loginEmail, setLoginEmail] = useState('ravinder@rd-infra.in');
-  const [loginPassword, setLoginPassword] = useState('admin123');
-  const [loginPin, setLoginPin] = useState('9898');
+  // Auth state: locked by default until verified via passcode rdinfra@2026
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
+    try {
+      return sessionStorage.getItem('rd_infra_admin_auth') === 'true';
+    } catch {
+      return false;
+    }
+  });
+
+  const [currentAdmin, setCurrentAdmin] = useState<AdminUser>(() => {
+    try {
+      const savedUser = sessionStorage.getItem('rd_infra_admin_user');
+      if (savedUser) return JSON.parse(savedUser);
+    } catch {}
+    return authorizedUsers[0];
+  });
+
+  const [selectedAdminId, setSelectedAdminId] = useState<'001' | '002' | '003'>('001');
+  const [loginIdentifier, setLoginIdentifier] = useState('ravinder deswal 001');
+  const [loginPasscode, setLoginPasscode] = useState('');
+  const [showPasscode, setShowPasscode] = useState(false);
   const [loginError, setLoginError] = useState('');
 
   // Active navigation tab
@@ -254,26 +277,100 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const [localSettings, setLocalSettings] = useState<SiteSettings>(settings);
   const [settingsSavedNotice, setSettingsSavedNotice] = useState(false);
 
-  // Login handler
+  // Login & Unlock handler
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    const matched = authorizedUsers.find(
-      (u) => u.email.toLowerCase() === loginEmail.trim().toLowerCase()
+    setLoginError('');
+
+    const inputId = loginIdentifier.trim().toLowerCase();
+    const inputPasscode = loginPasscode.trim();
+
+    if (!inputPasscode) {
+      setLoginError('Security Passcode is required to unlock.');
+      return;
+    }
+
+    // Passcode for Admin 1 (ravinder deswal 001) is "rdinfra@2026"
+    const isAdmin1 =
+      selectedAdminId === '001' ||
+      inputId === '001' ||
+      inputId === 'ravinder deswal 001' ||
+      inputId === 'ravinder deshwal 001' ||
+      inputId === 'ravinder deswal' ||
+      inputId === 'ravinder deshwal' ||
+      inputId === 'admin 1' ||
+      inputId === 'admin1' ||
+      inputId === 'admin-1' ||
+      inputId === 'ravinder@rd-infra.in' ||
+      inputId === '';
+
+    if (isAdmin1) {
+      if (inputPasscode === 'rdinfra@2026') {
+        const admin1 = authorizedUsers[0];
+        setIsAuthenticated(true);
+        setCurrentAdmin(admin1);
+        try {
+          sessionStorage.setItem('rd_infra_admin_auth', 'true');
+          sessionStorage.setItem('rd_infra_admin_user', JSON.stringify(admin1));
+        } catch {}
+        setLoginError('');
+        setLoginPasscode('');
+        onAddActivityLog('Admin Lock Unlocked', `Admin 1: Ravinder Deswal (001) unlocked the dashboard`);
+        return;
+      } else {
+        setLoginError('Access Denied: Passcode is incorrect. For Admin 1 (ravinder deswal 001), passcode is: rdinfra@2026');
+        return;
+      }
+    }
+
+    // Other authorized administrators
+    const otherAdmin = authorizedUsers.find(
+      (u) =>
+        u.id.toLowerCase() === inputId ||
+        (u.label && u.label.toLowerCase() === inputId) ||
+        u.email.toLowerCase() === inputId
     );
 
-    if (matched && (loginPassword === 'admin123' || loginPassword === 'rdinfra2024' || loginPassword.length >= 6)) {
+    if (otherAdmin && (inputPasscode === 'rdinfra@2026' || inputPasscode === 'admin123')) {
       setIsAuthenticated(true);
-      setCurrentAdmin(matched);
+      setCurrentAdmin(otherAdmin);
+      try {
+        sessionStorage.setItem('rd_infra_admin_auth', 'true');
+        sessionStorage.setItem('rd_infra_admin_user', JSON.stringify(otherAdmin));
+      } catch {}
       setLoginError('');
-      onAddActivityLog('Portal Login', `Session initiated by ${matched.name} (${matched.email})`);
-    } else {
-      setLoginError('Access denied. Please check your authorized email, password, and security PIN.');
+      setLoginPasscode('');
+      onAddActivityLog('Admin Lock Unlocked', `${otherAdmin.label || otherAdmin.name} unlocked the dashboard`);
+      return;
     }
+
+    // Universal unlock if rdinfra@2026 is entered
+    if (inputPasscode === 'rdinfra@2026') {
+      const admin1 = authorizedUsers[0];
+      setIsAuthenticated(true);
+      setCurrentAdmin(admin1);
+      try {
+        sessionStorage.setItem('rd_infra_admin_auth', 'true');
+        sessionStorage.setItem('rd_infra_admin_user', JSON.stringify(admin1));
+      } catch {}
+      setLoginError('');
+      setLoginPasscode('');
+      onAddActivityLog('Admin Lock Unlocked', `Admin 1: Ravinder Deswal (001) unlocked the dashboard`);
+      return;
+    }
+
+    setLoginError('Access Denied: Passcode is incorrect. For Admin 1 (ravinder deswal 001), passcode is: rdinfra@2026');
   };
 
-  const handleLogout = () => {
-    onAddActivityLog('Portal Logout', `Session ended by ${currentAdmin.name}`);
+  const handleLockAdmin = () => {
+    onAddActivityLog('Admin Lock Activated', `Session locked by ${currentAdmin.name}`);
+    try {
+      sessionStorage.removeItem('rd_infra_admin_auth');
+      sessionStorage.removeItem('rd_infra_admin_user');
+    } catch {}
     setIsAuthenticated(false);
+    setLoginPasscode('');
+    setLoginError('');
   };
 
   // Property Actions
@@ -428,127 +525,149 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     onAddActivityLog('Exported Leads', `Exported ${leads.length} leads to CSV`);
   };
 
-  // LOGIN SCREEN
+  // ADMIN LOCK SCREEN
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen bg-slate-950 flex flex-col justify-center items-center px-4 py-12 relative overflow-hidden font-sans">
-        <div className="absolute top-1/4 left-1/3 w-96 h-96 bg-[#0A4D92]/20 rounded-full blur-3xl pointer-events-none" />
+        {/* Glow ambient background elements */}
+        <div className="absolute top-1/4 left-1/3 w-96 h-96 bg-[#0A4D92]/25 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
+
         <div className="max-w-md w-full relative z-10">
-          <div className="bg-slate-900 border border-slate-800 rounded-3xl p-8 shadow-2xl backdrop-blur-xl">
+          <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl backdrop-blur-xl">
             {/* Header */}
-            <div className="text-center mb-8">
-              <div className="mb-4">
-                <span className="font-heading text-3xl font-black text-white tracking-tight block">
-                  RD INFRA
-                </span>
-                <p className="text-xs text-slate-400 font-semibold uppercase tracking-wider mt-1 block">
-                  Building Better Tomorrows
-                </p>
+            <div className="text-center mb-6">
+              <div className="mb-4 flex justify-center">
+                <RDInfraLogo variant="dark" size="lg" />
               </div>
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-950 border border-blue-800 text-blue-400 text-xs font-bold uppercase tracking-wider mb-2">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-bold uppercase tracking-wider mb-2">
                 <Lock className="w-3.5 h-3.5" />
-                <span>Internal Management Portal</span>
+                <span>Admin Lock Active</span>
               </div>
               <h1 className="text-2xl font-extrabold text-white tracking-tight font-heading">
-                Restricted Executive Access
+                Admin Portal Security Lock
               </h1>
-              <p className="text-xs text-slate-400 mt-2">
-                Authorized for 3 designated administrators: Director, Operations, and Strategic Sales.
+              <p className="text-xs text-slate-400 mt-1.5">
+                Authorized management access required to modify property listings, director profile, CRM leads, and settings.
               </p>
             </div>
 
-            {/* Warning Banner */}
-            <div className="mb-6 p-3.5 rounded-xl bg-rose-950/40 border border-rose-800/60 text-xs text-rose-300 flex items-start gap-2.5">
-              <AlertCircle className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
-              <span>
-                <strong>Restricted Notice:</strong> Unauthorized access attempts are monitored, logged, and reported.
-              </span>
-            </div>
-
-            {/* Quick Persona Selector for Testing */}
-            <div className="mb-4">
-              <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">
-                Quick Select Authorized User:
-              </label>
-              <div className="grid grid-cols-3 gap-2">
-                {authorizedUsers.map((u, i) => (
-                  <button
-                    key={u.id}
-                    type="button"
-                    onClick={() => {
-                      setLoginEmail(u.email);
-                      setLoginPassword('admin123');
-                      setLoginPin('9898');
-                    }}
-                    className={`p-2 rounded-xl border text-[11px] font-bold transition-all text-left ${
-                      loginEmail === u.email
-                        ? 'bg-blue-600/30 border-blue-500 text-white'
-                        : 'bg-slate-800/80 border-slate-700 text-slate-400 hover:text-slate-200'
-                    }`}
-                  >
-                    <div className="truncate font-semibold">Admin {i + 1}</div>
-                    <div className="truncate text-[10px] opacity-75">{u.name.split(' ')[0]}</div>
-                  </button>
-                ))}
+            {/* Admin 1 Authorized User Card */}
+            <div className="mb-5 p-3.5 rounded-2xl bg-slate-800/80 border border-slate-700/80">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                  Designated Administrator:
+                </span>
+                <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-400 border border-blue-500/30">
+                  ADMIN 1 (ID: 001)
+                </span>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-[#0A4D92] flex items-center justify-center text-white font-bold text-base shadow-sm shrink-0">
+                  RD
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className="text-sm font-bold text-white leading-tight truncate">
+                    Ravinder Deswal (001)
+                  </div>
+                  <div className="text-xs text-slate-400 truncate">
+                    Super Admin / Founder &amp; Director
+                  </div>
+                </div>
               </div>
             </div>
 
+            {/* Error Banner */}
             {loginError && (
-              <div className="mb-4 p-3 rounded-xl bg-rose-900/50 border border-rose-700 text-xs text-rose-200">
-                {loginError}
+              <div className="mb-4 p-3 rounded-xl bg-rose-950/70 border border-rose-800 text-xs text-rose-200 flex items-start gap-2">
+                <AlertCircle className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
+                <span className="leading-relaxed">{loginError}</span>
               </div>
             )}
 
-            {/* Login Form */}
+            {/* Lock Form */}
             <form onSubmit={handleLogin} className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">
-                  Authorized Corporate Email
+                <label className="block text-xs font-semibold text-slate-300 mb-1.5 flex justify-between">
+                  <span>Admin User / ID</span>
+                  <span className="text-slate-500 text-[11px]">Admin 1</span>
                 </label>
-                <input
-                  type="email"
-                  required
-                  value={loginEmail}
-                  onChange={(e) => setLoginEmail(e.target.value)}
-                  placeholder="name@rd-infra.in"
-                  className="w-full px-4 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                    <User className="w-4 h-4" />
+                  </div>
+                  <input
+                    type="text"
+                    required
+                    value={loginIdentifier}
+                    onChange={(e) => setLoginIdentifier(e.target.value)}
+                    placeholder="ravinder deswal 001"
+                    className="w-full pl-9 pr-4 py-2.5 bg-slate-800/90 border border-slate-700 rounded-xl text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">
-                  Access Password
+                <label className="block text-xs font-semibold text-slate-300 mb-1.5 flex justify-between">
+                  <span>Passcode</span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setLoginIdentifier('ravinder deswal 001');
+                      setLoginPasscode('rdinfra@2026');
+                    }}
+                    className="text-[11px] text-blue-400 hover:text-blue-300 transition-colors font-medium cursor-pointer"
+                  >
+                    Quick fill: rdinfra@2026
+                  </button>
                 </label>
-                <input
-                  type="password"
-                  required
-                  value={loginPassword}
-                  onChange={(e) => setLoginPassword(e.target.value)}
-                  placeholder="••••••••"
-                  className="w-full px-4 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                    <KeyRound className="w-4 h-4" />
+                  </div>
+                  <input
+                    type={showPasscode ? 'text' : 'password'}
+                    required
+                    value={loginPasscode}
+                    onChange={(e) => setLoginPasscode(e.target.value)}
+                    placeholder="Enter passcode (rdinfra@2026)"
+                    className="w-full pl-9 pr-10 py-2.5 bg-slate-800/90 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500 tracking-wider"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPasscode(!showPasscode)}
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-200 cursor-pointer"
+                    title={showPasscode ? 'Hide Passcode' : 'Show Passcode'}
+                  >
+                    {showPasscode ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
               </div>
 
-              <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">
-                  Security Two-Factor PIN
-                </label>
-                <input
-                  type="password"
-                  maxLength={6}
-                  value={loginPin}
-                  onChange={(e) => setLoginPin(e.target.value)}
-                  placeholder="4 or 6 digit PIN"
-                  className="w-full px-4 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white tracking-widest focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
+              {/* One-Click Autofill Admin 1 Button */}
+              <button
+                type="button"
+                onClick={() => {
+                  setLoginIdentifier('ravinder deswal 001');
+                  setLoginPasscode('rdinfra@2026');
+                }}
+                className="w-full py-2 px-3 rounded-xl bg-slate-800/90 hover:bg-slate-750 border border-slate-700 text-xs text-slate-300 hover:text-white transition-all flex items-center justify-between cursor-pointer group"
+              >
+                <span className="flex items-center gap-1.5 text-[11px]">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                  <span>Admin 1: <strong>ravinder deswal 001</strong></span>
+                </span>
+                <span className="text-[11px] font-mono text-blue-400 group-hover:underline">
+                  rdinfra@2026
+                </span>
+              </button>
 
               <button
                 type="submit"
-                className="w-full py-3 bg-[#0A4D92] hover:bg-blue-600 text-white font-bold text-sm rounded-xl shadow-lg transition-all cursor-pointer flex items-center justify-center gap-2 mt-2"
+                className="w-full py-3 bg-[#0A4D92] hover:bg-blue-600 active:scale-[0.99] text-white font-bold text-sm rounded-xl shadow-lg transition-all cursor-pointer flex items-center justify-center gap-2 mt-3"
               >
-                <Lock className="w-4 h-4" />
-                <span>Access Admin Portal</span>
+                <Unlock className="w-4 h-4" />
+                <span>Unlock Admin Dashboard</span>
               </button>
             </form>
 
@@ -556,7 +675,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               <button
                 type="button"
                 onClick={onExitAdmin}
-                className="text-xs text-slate-400 hover:text-white transition-colors"
+                className="text-xs text-slate-400 hover:text-white transition-colors cursor-pointer"
               >
                 ← Return to Public Website (rd-infra.in)
               </button>
@@ -574,9 +693,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       <header className="bg-slate-900 text-white border-b border-slate-800 sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <span className="font-heading text-lg font-black tracking-tight text-white block">
-              RD INFRA
-            </span>
+            <RDInfraLogo variant="dark" size="sm" />
             <div className="hidden sm:block border-l border-slate-700 pl-4">
               <div className="text-xs font-bold text-blue-400 uppercase tracking-wider font-heading">
                 Admin Management Portal
@@ -588,14 +705,22 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
           </div>
 
           <div className="flex items-center gap-3">
-            {/* Active User Badge */}
+            {/* Active User Badge with Admin Lock status */}
             <div className="hidden md:flex items-center gap-2.5 bg-slate-800 py-1.5 px-3 rounded-xl border border-slate-700 text-xs">
               <div className="w-7 h-7 rounded-lg bg-[#0A4D92] flex items-center justify-center text-white font-bold">
                 {currentAdmin.name[0]}
               </div>
               <div>
-                <div className="font-bold text-white leading-tight">{currentAdmin.name}</div>
-                <div className="text-[10px] text-blue-300 font-semibold">{currentAdmin.role}</div>
+                <div className="font-bold text-white leading-tight flex items-center gap-1.5">
+                  <span>{currentAdmin.name}</span>
+                  <span className="text-[10px] px-1.5 py-0.2 rounded bg-blue-900/60 text-blue-300 font-mono">
+                    {currentAdmin.id === '001' ? '001' : currentAdmin.id}
+                  </span>
+                </div>
+                <div className="text-[10px] text-emerald-400 font-semibold flex items-center gap-1">
+                  <ShieldCheck className="w-3 h-3" />
+                  <span>Admin Lock: Unlocked</span>
+                </div>
               </div>
             </div>
 
@@ -608,12 +733,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               <span>View Site</span>
             </button>
 
+            {/* Admin Lock Button */}
             <button
-              onClick={handleLogout}
-              className="px-3 py-1.5 text-xs font-bold text-rose-300 hover:text-white bg-rose-950/60 hover:bg-rose-900 border border-rose-800/80 rounded-xl transition-colors flex items-center gap-1 cursor-pointer"
+              onClick={handleLockAdmin}
+              className="px-3 py-1.5 text-xs font-bold text-amber-300 hover:text-white bg-amber-950/60 hover:bg-amber-900 border border-amber-800/80 rounded-xl transition-colors flex items-center gap-1.5 cursor-pointer"
+              title="Lock Admin Dashboard"
             >
-              <LogOut className="w-3.5 h-3.5" />
-              <span>Logout</span>
+              <Lock className="w-3.5 h-3.5" />
+              <span>Lock Admin</span>
             </button>
           </div>
         </div>
@@ -1722,6 +1849,43 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   onChange={(e) => setLocalSettings({ ...localSettings, office_location: e.target.value })}
                   className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs font-semibold text-slate-900"
                 />
+              </div>
+
+              {/* Brand Logo & Canva Link */}
+              <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-3">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h4 className="text-xs font-bold text-slate-900">Official Brand Logo (Canva)</h4>
+                    <p className="text-[11px] text-slate-500">Rendered in header, footer, and admin portals.</p>
+                  </div>
+                  <div className="bg-white p-1.5 rounded-lg border border-slate-200 shadow-2xs">
+                    <RDInfraLogo size="sm" />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-semibold text-slate-600 mb-1">Canva Logo Design & PDF Link</label>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="text"
+                      value={localSettings.canva_logo_link || 'https://canva.link/ko5bhxv1zaasyoe'}
+                      onChange={(e) => setLocalSettings({ ...localSettings, canva_logo_link: e.target.value })}
+                      placeholder="https://canva.link/ko5bhxv1zaasyoe"
+                      className="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-xs font-mono text-slate-800"
+                    />
+                    <a
+                      href={localSettings.canva_logo_link || 'https://canva.link/ko5bhxv1zaasyoe'}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-3 py-2 bg-blue-50 text-[#0A4D92] hover:bg-blue-100 border border-blue-200 rounded-lg text-xs font-bold whitespace-nowrap cursor-pointer"
+                    >
+                      Open Canva
+                    </a>
+                  </div>
+                  <p className="text-[10px] text-slate-400 mt-1">
+                    Direct link: <span className="font-mono text-slate-600">https://canva.link/ko5bhxv1zaasyoe</span>
+                  </p>
+                </div>
               </div>
 
               <button

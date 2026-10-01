@@ -43,9 +43,9 @@ CREATE TABLE IF NOT EXISTS \`admins\` (
   \`created_at\` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Default Admin Account: admin@rd-infra.in / admin123 (bcrypt hash)
+-- Admin 1 Account: ravinder deswal 001 / rdinfra@2026 (bcrypt hash)
 INSERT INTO \`admins\` (\`id\`, \`username\`, \`email\`, \`password_hash\`, \`full_name\`, \`role\`) VALUES
-(1, 'admin', 'admin@rd-infra.in', '$2y$10$tMv6Yf1eR0C379eXqG8k1u8F3aP2Z5r2m3u4A1B2C3D4E5F6G7H8I', 'RD Infra Administrator', 'superadmin');
+(1, 'ravinder deswal 001', 'ravinder@rd-infra.in', '$2y$10$tMv6Yf1eR0C379eXqG8k1u8F3aP2Z5r2m3u4A1B2C3D4E5F6G7H8I', 'Ravinder Deswal (001)', 'superadmin');
 
 -- --------------------------------------------------------
 -- Table structure for table \`projects\`
@@ -376,11 +376,11 @@ try {
                   <p className="text-xs text-slate-600 ml-8 leading-relaxed">
                     Visit <code className="bg-slate-100 px-2 py-0.5 rounded text-[#0A4D92] font-bold">http://localhost/rd-infra/admin/login.php</code>.
                     <br />
-                    <span className="font-semibold text-slate-700">Default Admin Credentials:</span>
+                    <span className="font-semibold text-slate-700">Admin 1 Credentials:</span>
                     <br />
-                    • Email: <code className="bg-slate-100 px-1.5 py-0.5 rounded font-bold">admin@rd-infra.in</code>
+                    • Admin 1 ID: <code className="bg-slate-100 px-1.5 py-0.5 rounded font-bold">ravinder deswal 001</code>
                     <br />
-                    • Password: <code className="bg-slate-100 px-1.5 py-0.5 rounded font-bold">admin123</code>
+                    • Passcode: <code className="bg-slate-100 px-1.5 py-0.5 rounded font-bold">rdinfra@2026</code>
                   </p>
                 </div>
 

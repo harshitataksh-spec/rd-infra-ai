@@ -1280,15 +1280,16 @@ He maintains trusted relationships with leading developers—including DLF, M3M,
               </div>
 
               <div className="flex items-center gap-3">
-                {isDirty && (
-                  <button
-                    type="button"
-                    onClick={() => setShowDiscardConfirm(true)}
-                    className="px-4 py-2 text-xs font-bold text-slate-600 hover:text-slate-800 hover:bg-slate-100 rounded-xl transition-colors cursor-pointer"
-                  >
-                    Discard Changes
-                  </button>
-                )}
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (onCancel) onCancel();
+                    else setShowDiscardConfirm(true);
+                  }}
+                  className="px-4 py-2.5 text-xs font-bold text-slate-600 hover:text-slate-800 hover:bg-slate-100 rounded-xl transition-colors cursor-pointer"
+                >
+                  Cancel Changes
+                </button>
 
                 <button
                   type="submit"
@@ -1303,12 +1304,12 @@ He maintains trusted relationships with leading developers—including DLF, M3M,
                   {isSaving ? (
                     <>
                       <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-                      <span>Updating...</span>
+                      <span>Saving Updates...</span>
                     </>
                   ) : (
                     <>
                       <Save className="w-3.5 h-3.5" />
-                      <span>UPDATE DIRECTOR PROFILE</span>
+                      <span>Save Director Profile Update</span>
                     </>
                   )}
                 </button>

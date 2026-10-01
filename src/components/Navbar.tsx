@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Phone, MessageSquare, Menu, X, ArrowRight } from 'lucide-react';
+import { Phone, MessageSquare, Menu, X, ArrowRight, Sparkles, ExternalLink, Lock } from 'lucide-react';
 import { SiteSettings } from '../types';
+import { RDInfraLogo } from './RDInfraLogo';
 
 interface NavbarProps {
   settings: SiteSettings;
@@ -9,6 +10,7 @@ interface NavbarProps {
   onOpenEnquiry: (projectName?: string) => void;
   onOpenAdmin: () => void;
   onOpenXamppGuide: () => void;
+  onOpenBrandPresentation?: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -18,6 +20,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenEnquiry,
   onOpenAdmin,
   onOpenXamppGuide,
+  onOpenBrandPresentation,
 }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -77,12 +80,37 @@ export const Navbar: React.FC<NavbarProps> = ({
             <span className="text-slate-300">|</span>
             <span className="text-slate-500 font-semibold">{settings.domain}</span>
             <span className="text-slate-300">|</span>
+            <a
+              href="https://canva.link/ko5bhxv1zaasyoe"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs font-semibold text-[#0A4D92] hover:text-blue-700 transition-colors cursor-pointer flex items-center gap-1"
+              title="View Official RD Infra Logo PDF on Canva"
+            >
+              <Sparkles className="w-3 h-3 text-blue-600" />
+              <span>Canva Logo</span>
+              <ExternalLink className="w-3 h-3 text-blue-500" />
+            </a>
+            {onOpenBrandPresentation && (
+              <>
+                <span className="text-slate-300">|</span>
+                <button
+                  onClick={onOpenBrandPresentation}
+                  className="text-xs font-semibold text-slate-500 hover:text-[#0A4D92] transition-colors cursor-pointer flex items-center gap-1"
+                  title="View Official Brand Presentation Modal"
+                >
+                  <span>Brand Modal</span>
+                </button>
+              </>
+            )}
+            <span className="text-slate-300">|</span>
             <button
               onClick={onOpenAdmin}
-              className="text-xs font-semibold text-slate-500 hover:text-[#0A4D92] transition-colors cursor-pointer flex items-center gap-1"
-              title="Admin Portal"
+              className="text-xs font-semibold text-slate-600 hover:text-[#0A4D92] transition-colors cursor-pointer flex items-center gap-1.5 px-2 py-0.5 rounded-lg hover:bg-slate-100"
+              title="RD INFRA Admin Lock Portal"
             >
-              <span>Admin Portal</span>
+              <Lock className="w-3 h-3 text-amber-500" />
+              <span>Admin Lock</span>
             </button>
           </div>
         </div>
@@ -90,16 +118,14 @@ export const Navbar: React.FC<NavbarProps> = ({
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center py-2 sm:py-2.5">
-          {/* Brand Name as Normal Text (No Logo) */}
-         <div class="canva-container">
-  <iframe
-    src="https://www.canva.com/design/DAHVdpgZwQc/PWH7DrwYc4LzYiJZ7KPaBw/view"
-    width="100%"
-    height="700"
-    style="border:0; border-radius:12px;"
-    allowfullscreen>
-  </iframe>
-</div>
+          {/* Official Brand Logo */}
+          <button
+            onClick={() => handleLinkClick('home')}
+            className="flex items-center text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 rounded-md cursor-pointer group py-0.5"
+            aria-label="RD INFRA - Home"
+          >
+            <RDInfraLogo size="md" />
+          </button>
 
           {/* Desktop Navigation Links */}
           <nav className="hidden lg:flex items-center space-x-0.5 xl:space-x-1.5" aria-label="Main Navigation">
@@ -170,14 +196,13 @@ export const Navbar: React.FC<NavbarProps> = ({
       {mobileMenuOpen && (
         <div className="lg:hidden border-t border-slate-200 bg-white shadow-xl px-4 pt-3 pb-6 space-y-2 animate-in slide-in-from-top duration-200">
           <div className="py-2.5 border-b border-slate-100 flex items-center justify-between">
-            <div>
-              <span className="font-heading text-lg font-black tracking-tight text-[#0A4D92] block">
-                RD INFRA
-              </span>
-              <span className="text-[9px] text-slate-500 font-semibold uppercase tracking-wider block">
-                Building Better Tomorrows
-              </span>
-            </div>
+            <button
+              onClick={() => handleLinkClick('home')}
+              className="flex items-center text-left focus:outline-none cursor-pointer"
+              aria-label="RD INFRA - Home"
+            >
+              <RDInfraLogo size="sm" />
+            </button>
             <a href={`tel:${settings.phone.replace(/\s+/g, '')}`} className="text-xs font-bold text-[#0A4D92] bg-blue-50 px-2.5 py-1 rounded-lg">
               {settings.phone}
             </a>
@@ -236,6 +261,30 @@ export const Navbar: React.FC<NavbarProps> = ({
               <MessageSquare className="w-4 h-4 text-emerald-600" />
               <span>WhatsApp</span>
             </a>
+          </div>
+
+          <div className="pt-1 flex flex-col gap-2">
+            <a
+              href="https://canva.link/ko5bhxv1zaasyoe"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full py-2.5 px-3 rounded-xl text-xs font-bold text-[#0A4D92] bg-blue-50 hover:bg-blue-100 border border-blue-200 text-center flex items-center justify-center gap-1.5 transition-colors"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-blue-600" />
+              <span>View Official Canva Logo PDF</span>
+              <ExternalLink className="w-3 h-3" />
+            </a>
+
+            <button
+              onClick={() => {
+                setMobileMenuOpen(false);
+                onOpenAdmin();
+              }}
+              className="w-full py-2.5 px-3 rounded-xl text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 border border-slate-300 text-center flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+            >
+              <Lock className="w-3.5 h-3.5 text-amber-500" />
+              <span>Admin Lock Portal</span>
+            </button>
           </div>
         </div>
       )}

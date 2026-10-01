@@ -1,6 +1,7 @@
 import React from 'react';
 import { ArrowRight, ShieldCheck, CheckCircle2, Award, Users, ChevronRight, Phone, Building2 } from 'lucide-react';
 import { SiteSettings } from '../types';
+import { RDInfraLogo } from './RDInfraLogo';
 
 interface HeroProps {
   settings: SiteSettings;
@@ -98,12 +99,9 @@ export const Hero: React.FC<HeroProps> = ({
                 <span className="inline-block px-3 py-1 rounded-full bg-blue-50 text-[#0A4D92] text-xs font-bold tracking-wider uppercase mb-3 border border-blue-100">
                   Executive Real Estate Advisory
                 </span>
-                <h3 className="font-heading text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
-                  RD INFRA
-                </h3>
-                <p className="text-xs text-slate-500 font-semibold tracking-wider uppercase mt-1">
-                  Building Better Tomorrows
-                </p>
+                <div className="py-1">
+                  <RDInfraLogo size="md" />
+                </div>
               </div>
               <div className="border-t border-slate-200/80 pt-4">
                 <p className="text-xs text-slate-600 leading-relaxed">

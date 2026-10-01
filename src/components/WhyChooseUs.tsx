@@ -8,9 +8,16 @@ import {
   Headphones,
   ShieldCheck,
   CheckCircle2,
+  Sparkles,
+  ExternalLink,
 } from 'lucide-react';
+import { RDInfraLogo } from './RDInfraLogo';
 
-export const WhyChooseUs: React.FC = () => {
+interface WhyChooseUsProps {
+  onOpenBrandModal?: () => void;
+}
+
+export const WhyChooseUs: React.FC<WhyChooseUsProps> = ({ onOpenBrandModal }) => {
   const benefits = [
     {
       icon: Compass,
@@ -98,6 +105,131 @@ export const WhyChooseUs: React.FC = () => {
               </div>
             );
           })}
+        </div>
+
+        {/* Official Brand Identity & Canva Logo Presentation Card */}
+        <div className="mt-16 bg-white border border-slate-200 rounded-3xl p-6 sm:p-10 shadow-sm">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+            {/* Left Column: Brand Story & Specifications */}
+            <div className="lg:col-span-6 space-y-5">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-200 text-[#0A4D92] text-xs font-bold uppercase tracking-wider">
+                <Sparkles className="w-3.5 h-3.5" />
+                <span>Verified Corporate Brand Identity</span>
+              </div>
+
+              <div>
+                <h3 className="text-2xl sm:text-3xl font-extrabold text-slate-900 font-heading tracking-tight leading-tight">
+                  Official RD INFRA Logo Design
+                </h3>
+                <p className="text-sm font-semibold text-[#0A4D92] uppercase tracking-wider mt-1">
+                  Building Better Tomorrows
+                </p>
+              </div>
+
+              <p className="text-sm text-slate-600 leading-relaxed">
+                The RD INFRA trademark embodies structural integrity, institutional stability, and modern skyline architecture. The interlocking 3D metallic blue and silver facets form our signature hexagonal crest framing high-rise silhouettes.
+              </p>
+
+              <div className="grid grid-cols-2 gap-3 pt-1">
+                <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-xl">
+                  <p className="text-xs font-bold text-slate-900">Original Canva Design</p>
+                  <p className="text-[11px] text-slate-500 mt-0.5">High-definition vector asset</p>
+                </div>
+                <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-xl">
+                  <p className="text-xs font-bold text-slate-900">Official Tagline</p>
+                  <p className="text-[11px] text-slate-500 mt-0.5">Building Better Tomorrows</p>
+                </div>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-3 pt-2">
+                <a
+                  href="https://canva.link/ko5bhxv1zaasyoe"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-4 py-2.5 bg-[#0A4D92] hover:bg-blue-800 text-white rounded-xl text-xs font-bold transition-all shadow-sm cursor-pointer"
+                >
+                  <span>Open RD Infra logo PDF</span>
+                  <ExternalLink className="w-3.5 h-3.5" />
+                </a>
+
+                <a
+                  href="https://canva.link/ko5bhxv1zaasyoe"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-xl text-xs font-bold transition-all cursor-pointer"
+                >
+                  <span>Open in Canva</span>
+                  <ExternalLink className="w-3.5 h-3.5" />
+                </a>
+
+                {onOpenBrandModal && (
+                  <button
+                    type="button"
+                    onClick={onOpenBrandModal}
+                    className="inline-flex items-center gap-2 px-4 py-2.5 bg-blue-50 hover:bg-blue-100 text-[#0A4D92] border border-blue-200 rounded-xl text-xs font-bold transition-all cursor-pointer"
+                  >
+                    <span>Enlarge Viewer</span>
+                  </button>
+                )}
+              </div>
+
+              <p className="text-[11px] text-slate-400">
+                Design document by <span className="text-slate-600 font-semibold">Harshita Taksh</span>
+              </p>
+            </div>
+
+            {/* Right Column: Exact Canva PDF Embed */}
+            <div className="lg:col-span-6">
+              <div className="max-w-md mx-auto">
+                <div
+                  style={{
+                    position: 'relative',
+                    width: '100%',
+                    height: 0,
+                    paddingTop: '141.4286%',
+                    paddingBottom: 0,
+                    boxShadow: '0 2px 8px 0 rgba(63,69,81,0.16)',
+                    marginTop: '1.6em',
+                    marginBottom: '0.9em',
+                    overflow: 'hidden',
+                    borderRadius: '8px',
+                    willChange: 'transform',
+                  }}
+                >
+                  <iframe
+                    loading="lazy"
+                    style={{
+                      position: 'absolute',
+                      width: '100%',
+                      height: '100%',
+                      top: 0,
+                      left: 0,
+                      border: 'none',
+                      padding: 0,
+                      margin: 0,
+                    }}
+                    src="https://www.canva.com/design/DAHVdpgZwQc/QpIOfpqwS-WrxfoHeqWMgg/view?embed"
+                    allowFullScreen
+                    allow="fullscreen"
+                    title="RD Infra logo PDF by Harshita Taksh"
+                  />
+                </div>
+
+                <div className="flex items-center justify-between text-xs text-slate-500 px-1">
+                  <a
+                    href="https://canva.link/ko5bhxv1zaasyoe"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[#0A4D92] hover:text-blue-800 font-semibold hover:underline inline-flex items-center gap-1"
+                  >
+                    RD Infra logo PDF
+                    <ExternalLink className="w-3 h-3" />
+                  </a>
+                  <span>by Harshita Taksh</span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>

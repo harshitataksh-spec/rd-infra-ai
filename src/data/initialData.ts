@@ -23,6 +23,8 @@ export const initialSiteSettings: SiteSettings = {
   office_location: 'Strategic Corridor Hub, Gurugram, Haryana, India',
   experience_years: '10+',
   since_year: '2014',
+  logo_url: '/logo.jpg',
+  canva_logo_link: 'https://canva.link/ko5bhxv1zaasyoe',
 };
 
 export const defaultSiteSettings = initialSiteSettings;
@@ -742,11 +744,11 @@ export const initialProperties: Property[] = [
 
 export const initialAdminUsers: AdminUser[] = [
   {
-    id: 'admin-1',
+    id: '001',
     label: 'Admin 1',
-    name: 'Mr. Ravinder Deshwal',
+    name: 'Ravinder Deswal',
     email: 'ravinder@rd-infra.in',
-    role: 'Founder & Director (Super Admin)',
+    role: 'Founder & Director (Super Admin - Admin 1)',
     lastLogin: '2026-09-17 08:00',
   },
   {
