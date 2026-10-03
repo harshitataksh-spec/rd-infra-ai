@@ -75,6 +75,7 @@ interface AdminDashboardProps {
   onAddActivityLog: (action: string, record: string) => void;
   onExitAdmin: () => void;
   onOpenXamppGuide: () => void;
+  onOpenGooglePublish?: () => void;
 }
 
 export const AdminDashboard: React.FC<AdminDashboardProps> = ({
@@ -99,6 +100,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   onAddActivityLog,
   onExitAdmin,
   onOpenXamppGuide,
+  onOpenGooglePublish,
 }) => {
   // Authorized Administrators
   const authorizedUsers: AdminUser[] = [
@@ -318,7 +320,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         onAddActivityLog('Admin Lock Unlocked', `Admin 1: Ravinder Deswal (001) unlocked the dashboard`);
         return;
       } else {
-        setLoginError('Access Denied: Passcode is incorrect. For Admin 1 (ravinder deswal 001), passcode is: rdinfra@2026');
+        setLoginError('Access Denied: Invalid security passcode. Please check your passcode and try again.');
         return;
       }
     }
@@ -344,7 +346,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       return;
     }
 
-    // Universal unlock if rdinfra@2026 is entered
+    // Universal unlock if authorized passcode is entered
     if (inputPasscode === 'rdinfra@2026') {
       const admin1 = authorizedUsers[0];
       setIsAuthenticated(true);
@@ -359,7 +361,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       return;
     }
 
-    setLoginError('Access Denied: Passcode is incorrect. For Admin 1 (ravinder deswal 001), passcode is: rdinfra@2026');
+    setLoginError('Access Denied: Invalid security passcode. Please verify your credentials and try again.');
   };
 
   const handleLockAdmin = () => {
@@ -609,17 +611,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
               <div>
                 <label className="block text-xs font-semibold text-slate-300 mb-1.5 flex justify-between">
-                  <span>Passcode</span>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setLoginIdentifier('ravinder deswal 001');
-                      setLoginPasscode('rdinfra@2026');
-                    }}
-                    className="text-[11px] text-blue-400 hover:text-blue-300 transition-colors font-medium cursor-pointer"
-                  >
-                    Quick fill: rdinfra@2026
-                  </button>
+                  <span>Security Passcode</span>
+                  <span className="text-slate-500 text-[11px]">Confidential Key</span>
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
@@ -630,8 +623,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     required
                     value={loginPasscode}
                     onChange={(e) => setLoginPasscode(e.target.value)}
-                    placeholder="Enter passcode (rdinfra@2026)"
-                    className="w-full pl-9 pr-10 py-2.5 bg-slate-800/90 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500 tracking-wider"
+                    placeholder="Enter security passcode"
+                    className="w-full pl-9 pr-10 py-2.5 bg-slate-800/90 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500 tracking-wider placeholder:text-slate-500"
                   />
                   <button
                     type="button"
@@ -644,27 +637,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 </div>
               </div>
 
-              {/* One-Click Autofill Admin 1 Button */}
-              <button
-                type="button"
-                onClick={() => {
-                  setLoginIdentifier('ravinder deswal 001');
-                  setLoginPasscode('rdinfra@2026');
-                }}
-                className="w-full py-2 px-3 rounded-xl bg-slate-800/90 hover:bg-slate-750 border border-slate-700 text-xs text-slate-300 hover:text-white transition-all flex items-center justify-between cursor-pointer group"
-              >
-                <span className="flex items-center gap-1.5 text-[11px]">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-                  <span>Admin 1: <strong>ravinder deswal 001</strong></span>
-                </span>
-                <span className="text-[11px] font-mono text-blue-400 group-hover:underline">
-                  rdinfra@2026
-                </span>
-              </button>
-
               <button
                 type="submit"
-                className="w-full py-3 bg-[#0A4D92] hover:bg-blue-600 active:scale-[0.99] text-white font-bold text-sm rounded-xl shadow-lg transition-all cursor-pointer flex items-center justify-center gap-2 mt-3"
+                className="w-full py-3 bg-[#0A4D92] hover:bg-blue-600 active:scale-[0.99] text-white font-bold text-sm rounded-xl shadow-lg transition-all cursor-pointer flex items-center justify-center gap-2 mt-4"
               >
                 <Unlock className="w-4 h-4" />
                 <span>Unlock Admin Dashboard</span>
@@ -723,6 +698,17 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 </div>
               </div>
             </div>
+
+            {onOpenGooglePublish && (
+              <button
+                onClick={onOpenGooglePublish}
+                className="px-3 py-1.5 text-xs font-bold text-blue-300 hover:text-white bg-blue-950/70 hover:bg-blue-900 border border-blue-800 rounded-xl transition-colors flex items-center gap-1.5 cursor-pointer"
+                title="Publish to Google / Search Console"
+              >
+                <Search className="w-3.5 h-3.5 text-blue-400" />
+                <span className="hidden sm:inline">Google SEO</span>
+              </button>
+            )}
 
             <button
               onClick={handleExitAdminClick}

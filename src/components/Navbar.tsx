@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Phone, MessageSquare, Menu, X, ArrowRight, Sparkles, ExternalLink, Lock } from 'lucide-react';
+import { Phone, MessageSquare, Menu, X, ArrowRight, Sparkles, ExternalLink, Lock, Search } from 'lucide-react';
 import { SiteSettings } from '../types';
 import { RDInfraLogo } from './RDInfraLogo';
 
@@ -11,6 +11,7 @@ interface NavbarProps {
   onOpenAdmin: () => void;
   onOpenXamppGuide: () => void;
   onOpenBrandPresentation?: () => void;
+  onOpenGooglePublish?: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -21,6 +22,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenAdmin,
   onOpenXamppGuide,
   onOpenBrandPresentation,
+  onOpenGooglePublish,
 }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -100,6 +102,19 @@ export const Navbar: React.FC<NavbarProps> = ({
                   title="View Official Brand Presentation Modal"
                 >
                   <span>Brand Modal</span>
+                </button>
+              </>
+            )}
+            {onOpenGooglePublish && (
+              <>
+                <span className="text-slate-300">|</span>
+                <button
+                  onClick={onOpenGooglePublish}
+                  className="text-xs font-semibold text-blue-700 hover:text-blue-900 transition-colors cursor-pointer flex items-center gap-1 px-2 py-0.5 rounded-lg hover:bg-blue-50"
+                  title="Publish to Google / Search Console"
+                >
+                  <Search className="w-3 h-3 text-blue-600" />
+                  <span>Google SEO</span>
                 </button>
               </>
             )}
@@ -274,6 +289,19 @@ export const Navbar: React.FC<NavbarProps> = ({
               <span>View Official Canva Logo PDF</span>
               <ExternalLink className="w-3 h-3" />
             </a>
+
+            {onOpenGooglePublish && (
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  onOpenGooglePublish();
+                }}
+                className="w-full py-2.5 px-3 rounded-xl text-xs font-bold text-blue-800 bg-blue-50 hover:bg-blue-100 border border-blue-200 text-center flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+              >
+                <Search className="w-3.5 h-3.5 text-blue-600" />
+                <span>Publish to Google Search</span>
+              </button>
+            )}
 
             <button
               onClick={() => {

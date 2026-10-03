@@ -43,7 +43,7 @@ CREATE TABLE IF NOT EXISTS \`admins\` (
   \`created_at\` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Admin 1 Account: ravinder deswal 001 / rdinfra@2026 (bcrypt hash)
+-- Admin 1 Account: ravinder deswal 001 (bcrypt hash)
 INSERT INTO \`admins\` (\`id\`, \`username\`, \`email\`, \`password_hash\`, \`full_name\`, \`role\`) VALUES
 (1, 'ravinder deswal 001', 'ravinder@rd-infra.in', '$2y$10$tMv6Yf1eR0C379eXqG8k1u8F3aP2Z5r2m3u4A1B2C3D4E5F6G7H8I', 'Ravinder Deswal (001)', 'superadmin');
 
@@ -380,7 +380,7 @@ try {
                     <br />
                     • Admin 1 ID: <code className="bg-slate-100 px-1.5 py-0.5 rounded font-bold">ravinder deswal 001</code>
                     <br />
-                    • Passcode: <code className="bg-slate-100 px-1.5 py-0.5 rounded font-bold">rdinfra@2026</code>
+                    • Passcode: <span className="text-slate-500 font-medium">Confidential Admin Passcode</span>
                   </p>
                 </div>
 

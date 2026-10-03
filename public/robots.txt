@@ -1,3 +1,20 @@
+# RD INFRA Robots.txt for Googlebot & Web Crawlers
 User-agent: *
 Allow: /
+Disallow: /admin
+Disallow: /api/admin
+
+User-agent: Googlebot
+Allow: /
+Allow: /*.jpg$
+Allow: /*.png$
+Allow: /*.ico$
+Allow: /*.svg$
+
+User-agent: Googlebot-Image
+Allow: /
+Allow: /logo.jpg
+Allow: /favicon*
+Allow: /apple-touch-icon*
+
 Sitemap: https://rd-infra.in/sitemap.xml

@@ -45,6 +45,7 @@ import { EnquiryModal } from './components/EnquiryModal';
 import { AdminDashboard } from './components/AdminDashboard';
 import { XamppExportModal } from './components/XamppExportModal';
 import { BrandPresentationModal } from './components/BrandPresentationModal';
+import { GooglePublishModal } from './components/GooglePublishModal';
 
 export default function App() {
   // 1. Persistent State with localStorage fallback
@@ -170,6 +171,7 @@ export default function App() {
   });
   const [isXamppModalOpen, setIsXamppModalOpen] = useState(false);
   const [isBrandModalOpen, setIsBrandModalOpen] = useState(false);
+  const [isGoogleModalOpen, setIsGoogleModalOpen] = useState(false);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [enquiryModal, setEnquiryModal] = useState<{ isOpen: boolean; projectName?: string }>({
     isOpen: false,
@@ -449,6 +451,7 @@ export default function App() {
           window.history.replaceState(null, '', window.location.pathname === '/admin/director-profile' ? '/' : ' ');
         }}
         onOpenXamppGuide={() => setIsXamppModalOpen(true)}
+        onOpenGooglePublish={() => setIsGoogleModalOpen(true)}
       />
     );
   }
@@ -465,6 +468,7 @@ export default function App() {
         onOpenAdmin={() => setIsAdminOpen(true)}
         onOpenXamppGuide={() => setIsXamppModalOpen(true)}
         onOpenBrandPresentation={() => setIsBrandModalOpen(true)}
+        onOpenGooglePublish={() => setIsGoogleModalOpen(true)}
       />
 
       {/* 1. Home / Hero & Search Section */}
@@ -598,6 +602,7 @@ export default function App() {
         onOpenAdmin={() => setIsAdminOpen(true)}
         onOpenXamppGuide={() => setIsXamppModalOpen(true)}
         onOpenBrandPresentation={() => setIsBrandModalOpen(true)}
+        onOpenGooglePublish={() => setIsGoogleModalOpen(true)}
       />
 
       {/* Floating Action Buttons (Phone, WhatsApp, Scroll to top) */}
@@ -633,6 +638,13 @@ export default function App() {
       <XamppExportModal
         isOpen={isXamppModalOpen}
         onClose={() => setIsXamppModalOpen(false)}
+      />
+
+      {/* Google Search Console & SEO Indexing Modal */}
+      <GooglePublishModal
+        isOpen={isGoogleModalOpen}
+        onClose={() => setIsGoogleModalOpen(false)}
+        domain={settings.domain}
       />
     </div>
   );
