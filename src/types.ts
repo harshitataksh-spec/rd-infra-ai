@@ -239,7 +239,10 @@ export interface ChatMessage {
 export interface Testimonial {
   id: number;
   customer_name: string;
+  name?: string;
   testimonial: string;
+  comment?: string;
+  propertyType?: string;
   rating: number;
   role?: string;
   location_tag?: string;

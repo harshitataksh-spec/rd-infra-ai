@@ -36,6 +36,7 @@ import {
   Award,
   Upload,
   AlertTriangle,
+  Globe,
 } from 'lucide-react';
 import {
   Project,
@@ -75,7 +76,7 @@ interface AdminDashboardProps {
   onAddActivityLog: (action: string, record: string) => void;
   onExitAdmin: () => void;
   onOpenXamppGuide: () => void;
-  onOpenGooglePublish?: () => void;
+  onOpenGoogleConsole?: () => void;
 }
 
 export const AdminDashboard: React.FC<AdminDashboardProps> = ({
@@ -100,7 +101,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   onAddActivityLog,
   onExitAdmin,
   onOpenXamppGuide,
-  onOpenGooglePublish,
+  onOpenGoogleConsole,
 }) => {
   // Authorized Administrators
   const authorizedUsers: AdminUser[] = [
@@ -699,17 +700,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               </div>
             </div>
 
-            {onOpenGooglePublish && (
-              <button
-                onClick={onOpenGooglePublish}
-                className="px-3 py-1.5 text-xs font-bold text-blue-300 hover:text-white bg-blue-950/70 hover:bg-blue-900 border border-blue-800 rounded-xl transition-colors flex items-center gap-1.5 cursor-pointer"
-                title="Publish to Google / Search Console"
-              >
-                <Search className="w-3.5 h-3.5 text-blue-400" />
-                <span className="hidden sm:inline">Google SEO</span>
-              </button>
-            )}
-
             <button
               onClick={handleExitAdminClick}
               className="px-3 py-1.5 text-xs font-semibold text-slate-300 hover:text-white bg-slate-800 hover:bg-slate-700 rounded-xl transition-colors cursor-pointer"
@@ -861,6 +851,17 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   <FileSpreadsheet className="w-4 h-4" />
                   <span>Export Leads CSV</span>
                 </button>
+
+                {onOpenGoogleConsole && (
+                  <button
+                    type="button"
+                    onClick={onOpenGoogleConsole}
+                    className="px-4 py-2 bg-blue-50 hover:bg-blue-100 text-[#0A4D92] border border-blue-200 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer"
+                  >
+                    <Globe className="w-4 h-4" />
+                    <span>Google Search Console</span>
+                  </button>
+                )}
               </div>
             </div>
 
@@ -1871,6 +1872,30 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   <p className="text-[10px] text-slate-400 mt-1">
                     Direct link: <span className="font-mono text-slate-600">https://canva.link/ko5bhxv1zaasyoe</span>
                   </p>
+                </div>
+              </div>
+
+              {/* Google Search Console & SEO Indexing Card */}
+              <div className="p-4 bg-emerald-50/70 rounded-2xl border border-emerald-200 space-y-3">
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <h4 className="text-xs font-bold text-slate-900 flex items-center gap-1.5">
+                      <Globe className="w-3.5 h-3.5 text-emerald-700" />
+                      <span>Google Search Console &amp; Brand Indexing</span>
+                    </h4>
+                    <p className="text-[11px] text-slate-600 mt-0.5">
+                      Manage Google verification token, XML sitemap, and RD INFRA brand search snippet.
+                    </p>
+                  </div>
+                  {onOpenGoogleConsole && (
+                    <button
+                      type="button"
+                      onClick={onOpenGoogleConsole}
+                      className="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold whitespace-nowrap cursor-pointer transition-colors"
+                    >
+                      Open Google Console
+                    </button>
+                  )}
                 </div>
               </div>
 

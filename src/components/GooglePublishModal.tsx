@@ -1,22 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   X,
-  ExternalLink,
+  Search,
+  Globe,
   CheckCircle2,
   Copy,
   Check,
-  Search,
-  Globe,
+  ExternalLink,
   FileCode,
   ShieldCheck,
   Sparkles,
-  ArrowRight,
-  Eye,
   Smartphone,
   Monitor,
-  AlertCircle
+  KeyRound,
+  RefreshCw,
 } from 'lucide-react';
-import { RDInfraLogo } from './RDInfraLogo';
 
 interface GooglePublishModalProps {
   isOpen: boolean;
@@ -29,94 +27,83 @@ export const GooglePublishModal: React.FC<GooglePublishModalProps> = ({
   onClose,
   domain = 'rd-infra.in',
 }) => {
-  const [copiedSitemap, setCopiedSitemap] = useState(false);
-  const [copiedUrl, setCopiedUrl] = useState(false);
+  const [copiedItem, setCopiedItem] = useState<string | null>(null);
   const [previewDevice, setPreviewDevice] = useState<'mobile' | 'desktop'>('mobile');
   const [verificationCode, setVerificationCode] = useState(() => {
-    return localStorage.getItem('rd_infra_google_verification') || 'xkbfQKckJzjcLrNwpxbzZlomzbQ_sinVkzvVl83WGiE';
+    return localStorage.getItem('rd_infra_google_verification') || 'e4qefdr33c2pRgmvRPtpjhGoBCjeftWqDMlAkTZAEyM';
   });
-  const [isSavedCode, setIsSavedCode] = useState(false);
-
-  const sitemapUrl = `https://${domain}/sitemap.xml`;
-  const websiteUrl = `https://${domain}/`;
-
-  useEffect(() => {
-    if (verificationCode) {
-      const meta = document.getElementById('google-verification-meta');
-      if (meta) {
-        meta.setAttribute('content', verificationCode);
-      }
-    }
-  }, [verificationCode]);
+  const [savedTokenSuccess, setSavedTokenSuccess] = useState(false);
 
   if (!isOpen) return null;
 
-  const handleCopySitemap = () => {
-    navigator.clipboard.writeText(sitemapUrl);
-    setCopiedSitemap(true);
-    setTimeout(() => setCopiedSitemap(false), 2000);
+  const websiteUrl = `https://${domain}/`;
+  const sitemapUrl = `https://${domain}/sitemap.xml`;
+  const robotsUrl = `https://${domain}/robots.txt`;
+
+  const handleCopy = (text: string, label: string) => {
+    navigator.clipboard.writeText(text);
+    setCopiedItem(label);
+    setTimeout(() => setCopiedItem(null), 2000);
   };
 
-  const handleCopyUrl = () => {
-    navigator.clipboard.writeText(websiteUrl);
-    setCopiedUrl(true);
-    setTimeout(() => setCopiedUrl(false), 2000);
-  };
-
-  const handleSaveVerification = (e: React.FormEvent) => {
+  const handleSaveVerificationCode = (e: React.FormEvent) => {
     e.preventDefault();
-    localStorage.setItem('rd_infra_google_verification', verificationCode.trim());
-    const meta = document.getElementById('google-verification-meta');
-    if (meta) {
-      meta.setAttribute('content', verificationCode.trim());
+    const cleaned = verificationCode
+      .replace(/<meta[^>]*content=["']?/i, '')
+      .replace(/["']?[^>]*>/i, '')
+      .trim();
+    setVerificationCode(cleaned);
+    localStorage.setItem('rd_infra_google_verification', cleaned);
+
+    const metaEl = document.getElementById('google-verification-meta');
+    if (metaEl) {
+      metaEl.setAttribute('content', cleaned);
     }
-    setIsSavedCode(true);
-    setTimeout(() => setIsSavedCode(false), 2500);
+    setSavedTokenSuccess(true);
+    setTimeout(() => setSavedTokenSuccess(false), 3000);
   };
+
+  const metaTagString = `<meta name="google-site-verification" content="${verificationCode}" />`;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/80 backdrop-blur-md overflow-y-auto">
-      <div className="bg-white rounded-3xl shadow-2xl max-w-3xl w-full my-6 overflow-hidden border border-slate-200 animate-in fade-in zoom-in-95 duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-slate-950/75 backdrop-blur-sm overflow-y-auto">
+      <div className="bg-white border border-slate-200 rounded-2xl max-w-4xl w-full overflow-hidden shadow-2xl my-8 flex flex-col max-h-[90vh]">
         {/* Top Header */}
-        <div className="bg-gradient-to-r from-slate-900 via-[#0A4D92] to-slate-900 text-white p-5 sm:p-6 flex items-center justify-between relative overflow-hidden">
-          <div className="absolute right-0 top-0 translate-x-8 -translate-y-8 w-48 h-48 bg-white/10 rounded-full blur-2xl pointer-events-none" />
-          
-          <div className="relative z-10 flex items-center gap-3.5">
-            <div className="w-11 h-11 rounded-2xl bg-white/15 border border-white/20 flex items-center justify-center backdrop-blur-sm shadow-inner">
-              <Search className="w-5 h-5 text-blue-200" />
+        <div className="bg-gradient-to-r from-[#0A4D92] via-blue-900 to-slate-900 px-6 py-5 text-white flex items-center justify-between shrink-0">
+          <div className="flex items-center gap-3.5">
+            <div className="h-11 w-11 rounded-xl bg-white/15 border border-white/20 flex items-center justify-center shadow-inner">
+              <Search className="w-6 h-6 text-amber-300" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="text-lg sm:text-xl font-bold font-heading text-white">
-                  Publish to Google Search
+                <h3 className="text-lg sm:text-xl font-bold tracking-tight">
+                  Google Search Console &amp; Brand Indexing
                 </h3>
-                <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 text-[10px] font-extrabold uppercase tracking-wider">
-                  SEO Ready
+                <span className="px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 rounded-full">
+                  SEO Active
                 </span>
               </div>
-              <p className="text-xs text-blue-100/90 mt-0.5">
-                Index {domain} on Googlebot, verify Search Console &amp; submit sitemaps
+              <p className="text-xs text-blue-100 mt-0.5">
+                Verify {domain} on Google Search Console, manage site brand identity &amp; submit sitemaps
               </p>
             </div>
           </div>
-
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors cursor-pointer shrink-0 z-10"
-            title="Close modal"
+            className="p-2 rounded-lg bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer"
+            aria-label="Close modal"
           >
-            <X className="w-4 h-4" />
+            <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Modal Body */}
-        <div className="p-5 sm:p-6 space-y-6 max-h-[78vh] overflow-y-auto text-slate-700 text-sm">
-          
+        <div className="p-6 overflow-y-auto space-y-6 flex-1">
           {/* Section 1: Live Google Search Result Preview */}
-          <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 sm:p-5">
-            <div className="flex items-center justify-between mb-3">
+          <div className="bg-slate-50 border border-slate-200 rounded-2xl p-5">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
               <div className="flex items-center gap-2">
-                <Eye className="w-4 h-4 text-[#0A4D92]" />
+                <Sparkles className="w-4 h-4 text-[#0A4D92]" />
                 <span className="text-xs font-bold uppercase tracking-wider text-slate-700">
                   Google Search Snippet Preview
                 </span>
@@ -127,8 +114,10 @@ export const GooglePublishModal: React.FC<GooglePublishModalProps> = ({
                 <button
                   type="button"
                   onClick={() => setPreviewDevice('mobile')}
-                  className={`flex items-center gap-1 px-2.5 py-1 rounded-md font-semibold transition-all ${
-                    previewDevice === 'mobile' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600 hover:text-slate-900'
+                  className={`flex items-center gap-1 px-2.5 py-1 rounded-md font-semibold transition-all cursor-pointer ${
+                    previewDevice === 'mobile'
+                      ? 'bg-white text-slate-900 shadow-xs'
+                      : 'text-slate-600 hover:text-slate-900'
                   }`}
                 >
                   <Smartphone className="w-3.5 h-3.5" />
@@ -137,8 +126,10 @@ export const GooglePublishModal: React.FC<GooglePublishModalProps> = ({
                 <button
                   type="button"
                   onClick={() => setPreviewDevice('desktop')}
-                  className={`flex items-center gap-1 px-2.5 py-1 rounded-md font-semibold transition-all ${
-                    previewDevice === 'desktop' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600 hover:text-slate-900'
+                  className={`flex items-center gap-1 px-2.5 py-1 rounded-md font-semibold transition-all cursor-pointer ${
+                    previewDevice === 'desktop'
+                      ? 'bg-white text-slate-900 shadow-xs'
+                      : 'text-slate-600 hover:text-slate-900'
                   }`}
                 >
                   <Monitor className="w-3.5 h-3.5" />
@@ -150,41 +141,32 @@ export const GooglePublishModal: React.FC<GooglePublishModalProps> = ({
             {/* Google Result Card Simulation */}
             <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm font-sans max-w-xl">
               {/* Header with Site Favicon & Name */}
-              <div className="flex items-center gap-2.5 mb-1.5">
+              <div className="flex items-center gap-3 mb-2">
                 <div className="w-7 h-7 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center overflow-hidden shrink-0">
                   <img src="/logo.jpg" alt="RD INFRA" className="w-6 h-6 object-contain" />
                 </div>
                 <div className="leading-tight overflow-hidden">
-                  <div className="text-[13px] font-medium text-[#202124] flex items-center gap-1.5 truncate">
-                    <span>RD INFRA</span>
-                    <span className="text-slate-400 text-xs">•</span>
-                    <span className="text-slate-500 text-xs truncate">https://rd-infra.in</span>
+                  <div className="text-[14px] font-medium text-[#202124] truncate">
+                    RD INFRA
+                  </div>
+                  <div className="text-[12px] text-[#4d5156] truncate">
+                    https://{domain}
                   </div>
                 </div>
               </div>
 
               {/* Title Link */}
-              <h4 className="text-[17px] sm:text-[19px] font-normal text-[#1a0dab] hover:underline cursor-pointer leading-snug mb-1">
-                RD INFRA | Building Better Tomorrows – Real Estate &amp; Land Investment
+              <h4 className="text-[18px] sm:text-[20px] font-normal text-[#1a0dab] hover:underline cursor-pointer leading-snug mb-1.5">
+                RD INFRA | Properties, Real Estate &amp; Investment
               </h4>
-
-              {/* Rating stars snippet */}
-              <div className="flex items-center gap-1.5 text-xs text-slate-600 mb-1.5">
-                <div className="flex text-amber-500">
-                  {'★'.repeat(5)}
-                </div>
-                <span className="font-semibold text-slate-700">Rating: 4.9</span>
-                <span className="text-slate-400">•</span>
-                <span>128 verified customer reviews</span>
-              </div>
 
               {/* Snippet Description */}
               <p className="text-xs sm:text-[13px] text-[#4d5156] leading-relaxed mb-3">
-                Explore luxury farmhouses, premium residential plots, and strategic corridor investments across Gurgaon, NH-48, Sohna, and Vrindavan with RD INFRA.
+                RD INFRA is a North Indian real estate advisory and development firm established in 2014. We specialize in premium farmhouses, strategic land investments, and plotted developments across Gurgaon, NH-48, Sohna, and Vrindavan.
               </p>
 
               {/* Sitelinks Mini Grid */}
-              <div className="pt-2 border-t border-slate-100 grid grid-cols-2 gap-2 text-xs">
+              <div className="pt-2.5 border-t border-slate-100 grid grid-cols-2 gap-2 text-xs">
                 <div className="text-[#1a0dab] hover:underline cursor-pointer font-medium truncate">
                   Director’s Profile
                 </div>
@@ -203,208 +185,226 @@ export const GooglePublishModal: React.FC<GooglePublishModalProps> = ({
 
           {/* Section 2: Three-Step Publishing Action Plan */}
           <div className="space-y-4">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400">
-              Publishing Checklist for Google Search Console
+            <h4 className="text-sm font-bold uppercase tracking-wider text-slate-700 flex items-center gap-2">
+              <Globe className="w-4 h-4 text-[#0A4D92]" />
+              Google Search Console Checklist
             </h4>
 
-            {/* Step 1 */}
-            <div className="p-4 rounded-2xl bg-white border border-slate-200 shadow-xs space-y-3">
-              <div className="flex items-start justify-between gap-3">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-7 h-7 rounded-xl bg-blue-50 text-[#0A4D92] font-bold flex items-center justify-center text-xs shrink-0">
-                    1
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {/* Step 1: Verify Ownership */}
+              <div className="border border-slate-200 rounded-xl p-4 bg-white flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-blue-50 text-[#0A4D92] border border-blue-200">
+                      Step 1
+                    </span>
+                    <KeyRound className="w-4 h-4 text-slate-400" />
                   </div>
-                  <div>
-                    <h5 className="font-bold text-slate-800 text-sm">
-                      Verify Domain in Google Search Console
-                    </h5>
-                    <p className="text-xs text-slate-500">
-                      Add your domain to Google Search Console to monitor crawls, indexing, and traffic.
-                    </p>
-                  </div>
+                  <h5 className="font-bold text-slate-900 text-sm mb-1">
+                    HTML Meta Tag Verification
+                  </h5>
+                  <p className="text-xs text-slate-600 leading-relaxed mb-3">
+                    Your Google Search Console verification tag (<code className="bg-slate-100 px-1 rounded">e4qefdr...</code>) and HTML file (<a href="/googlecc57c600f52289c8.html" target="_blank" rel="noopener noreferrer" className="text-[#0A4D92] underline font-mono">googlecc57c600f52289c8.html</a>) are live.
+                  </p>
                 </div>
 
-                <a
-                  href="https://search.google.com/search-console"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="px-3 py-1.5 rounded-xl bg-[#0A4D92] hover:bg-blue-700 text-white font-semibold text-xs transition-colors flex items-center gap-1.5 shrink-0"
-                >
-                  <span>Open Console</span>
-                  <ExternalLink className="w-3.5 h-3.5" />
-                </a>
-              </div>
-
-              {/* Custom Verification Meta Form */}
-              <form onSubmit={handleSaveVerification} className="mt-2 pt-2 border-t border-slate-100">
-                <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">
-                  Google Verification HTML Meta Tag Content:
-                </label>
-                <div className="flex gap-2">
+                <form onSubmit={handleSaveVerificationCode} className="space-y-2 pt-2 border-t border-slate-100">
+                  <label className="block text-[11px] font-semibold text-slate-600">
+                    Google Verification Token:
+                  </label>
                   <input
                     type="text"
                     value={verificationCode}
                     onChange={(e) => setVerificationCode(e.target.value)}
-                    placeholder="google-site-verification code"
-                    className="flex-1 px-3 py-2 text-xs bg-slate-50 border border-slate-300 rounded-xl font-mono text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Paste token or meta tag"
+                    className="w-full px-2.5 py-1.5 text-xs border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0A4D92]"
                   />
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="submit"
+                      className="flex-1 py-1.5 px-3 bg-[#0A4D92] hover:bg-blue-800 text-white font-semibold text-xs rounded-lg transition-colors cursor-pointer"
+                    >
+                      {savedTokenSuccess ? 'Saved!' : 'Update Token'}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleCopy(metaTagString, 'meta')}
+                      className="py-1.5 px-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs rounded-lg transition-colors cursor-pointer"
+                      title="Copy HTML Meta Tag"
+                    >
+                      {copiedItem === 'meta' ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
+                    </button>
+                  </div>
+                </form>
+              </div>
+
+              {/* Step 2: Submit XML Sitemap */}
+              <div className="border border-slate-200 rounded-xl p-4 bg-white flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-blue-50 text-[#0A4D92] border border-blue-200">
+                      Step 2
+                    </span>
+                    <FileCode className="w-4 h-4 text-slate-400" />
+                  </div>
+                  <h5 className="font-bold text-slate-900 text-sm mb-1">
+                    Submit Sitemap URL
+                  </h5>
+                  <p className="text-xs text-slate-600 leading-relaxed mb-3">
+                    In Google Search Console, open <strong>Sitemaps</strong> on the left menu and submit your XML sitemap URL.
+                  </p>
+                </div>
+
+                <div className="space-y-2 pt-2 border-t border-slate-100">
+                  <div className="bg-slate-50 p-2 rounded-lg border border-slate-200 font-mono text-[11px] text-slate-700 truncate">
+                    {sitemapUrl}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => handleCopy(sitemapUrl, 'sitemap')}
+                      className="flex-1 py-1.5 px-3 bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold text-xs rounded-lg flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                    >
+                      {copiedItem === 'sitemap' ? (
+                        <>
+                          <Check className="w-3.5 h-3.5 text-emerald-600" />
+                          <span className="text-emerald-700">Copied!</span>
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="w-3.5 h-3.5" />
+                          <span>Copy Sitemap URL</span>
+                        </>
+                      )}
+                    </button>
+                    <a
+                      href="/sitemap.xml"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-1.5 bg-blue-50 hover:bg-blue-100 text-[#0A4D92] rounded-lg border border-blue-200 transition-colors"
+                      title="Open Live Sitemap"
+                    >
+                      <ExternalLink className="w-3.5 h-3.5" />
+                    </a>
+                  </div>
+                </div>
+              </div>
+
+              {/* Step 3: Request Indexing */}
+              <div className="border border-slate-200 rounded-xl p-4 bg-white flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+                      Step 3
+                    </span>
+                    <RefreshCw className="w-4 h-4 text-emerald-600" />
+                  </div>
+                  <h5 className="font-bold text-slate-900 text-sm mb-1">
+                    URL Inspection &amp; Re-Index
+                  </h5>
+                  <p className="text-xs text-slate-600 leading-relaxed mb-3">
+                    Paste <code className="bg-slate-100 px-1 rounded text-slate-800 font-semibold">{websiteUrl}</code> into the top bar of Search Console and click <strong>Request Indexing</strong>.
+                  </p>
+                </div>
+
+                <div className="space-y-2 pt-2 border-t border-slate-100">
                   <button
-                    type="submit"
-                    className="px-3.5 py-2 bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold rounded-xl transition-colors cursor-pointer shrink-0"
+                    type="button"
+                    onClick={() => handleCopy(websiteUrl, 'siteUrl')}
+                    className="w-full py-1.5 px-3 bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold text-xs rounded-lg flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
                   >
-                    {isSavedCode ? 'Saved ✓' : 'Save Meta Tag'}
+                    {copiedItem === 'siteUrl' ? (
+                      <>
+                        <Check className="w-3.5 h-3.5 text-emerald-600" />
+                        <span className="text-emerald-700">Homepage URL Copied!</span>
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="w-3.5 h-3.5" />
+                        <span>Copy {websiteUrl}</span>
+                      </>
+                    )}
                   </button>
+                  <a
+                    href="https://search.google.com/search-console"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full py-1.5 px-3 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs rounded-lg flex items-center justify-center gap-1.5 transition-colors"
+                  >
+                    <span>Open Search Console</span>
+                    <ExternalLink className="w-3.5 h-3.5" />
+                  </a>
                 </div>
-                <div className="text-[11px] text-slate-500 mt-1">
-                  Tag in &lt;head&gt;: <code className="bg-slate-100 px-1 py-0.5 rounded text-blue-700">&lt;meta name="google-site-verification" content="{verificationCode}" /&gt;</code>
-                </div>
-              </form>
-            </div>
-
-            {/* Step 2 */}
-            <div className="p-4 rounded-2xl bg-white border border-slate-200 shadow-xs space-y-2.5">
-              <div className="flex items-start justify-between gap-3">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-7 h-7 rounded-xl bg-blue-50 text-[#0A4D92] font-bold flex items-center justify-center text-xs shrink-0">
-                    2
-                  </div>
-                  <div>
-                    <h5 className="font-bold text-slate-800 text-sm">
-                      Submit XML Sitemap to Googlebot
-                    </h5>
-                    <p className="text-xs text-slate-500">
-                      Submit your structured XML sitemap in Google Search Console under "Sitemaps".
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-2 p-2.5 rounded-xl bg-slate-50 border border-slate-200">
-                <FileCode className="w-4 h-4 text-blue-600 shrink-0" />
-                <span className="font-mono text-xs text-slate-700 flex-1 truncate">
-                  {sitemapUrl}
-                </span>
-                <button
-                  type="button"
-                  onClick={handleCopySitemap}
-                  className="px-2.5 py-1 bg-white hover:bg-slate-100 border border-slate-300 rounded-lg text-xs font-semibold text-slate-700 flex items-center gap-1 transition-colors cursor-pointer"
-                >
-                  {copiedSitemap ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5 text-slate-500" />}
-                  <span>{copiedSitemap ? 'Copied' : 'Copy'}</span>
-                </button>
-                <a
-                  href="/sitemap.xml"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="px-2.5 py-1 bg-white hover:bg-slate-100 border border-slate-300 rounded-lg text-xs font-semibold text-[#0A4D92] flex items-center gap-1 transition-colors"
-                >
-                  <span>View</span>
-                  <ExternalLink className="w-3 h-3" />
-                </a>
-              </div>
-            </div>
-
-            {/* Step 3 */}
-            <div className="p-4 rounded-2xl bg-white border border-slate-200 shadow-xs space-y-2">
-              <div className="flex items-start justify-between gap-3">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-7 h-7 rounded-xl bg-blue-50 text-[#0A4D92] font-bold flex items-center justify-center text-xs shrink-0">
-                    3
-                  </div>
-                  <div>
-                    <h5 className="font-bold text-slate-800 text-sm">
-                      Request Instant URL Indexing
-                    </h5>
-                    <p className="text-xs text-slate-500">
-                      In Google Search Console, paste <code className="bg-slate-100 px-1 rounded text-slate-800 font-semibold">{websiteUrl}</code> into the URL Inspection bar at the top and click <strong>"Request Indexing"</strong>.
-                    </p>
-                  </div>
-                </div>
-
-                <button
-                  type="button"
-                  onClick={handleCopyUrl}
-                  className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs transition-colors flex items-center gap-1 shrink-0 cursor-pointer"
-                >
-                  {copiedUrl ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5 text-slate-500" />}
-                  <span>{copiedUrl ? 'Copied' : 'Copy URL'}</span>
-                </button>
               </div>
             </div>
           </div>
 
-          {/* Section 3: Google SEO Diagnostics & Health Badges */}
-          <div className="bg-slate-50 rounded-2xl p-4 border border-slate-200">
-            <h5 className="text-xs font-bold text-slate-700 uppercase tracking-wider mb-2.5">
-              Live Google SEO Diagnostics
-            </h5>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
-              <div className="flex items-center gap-2 text-emerald-700 bg-emerald-50/80 p-2 rounded-xl border border-emerald-200">
-                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                <span>Googlebot Directive: <strong>index, follow</strong></span>
-              </div>
-              <div className="flex items-center gap-2 text-emerald-700 bg-emerald-50/80 p-2 rounded-xl border border-emerald-200">
-                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                <span>Google Favicon 48px Multiple: <strong>Linked</strong></span>
-              </div>
-              <div className="flex items-center gap-2 text-emerald-700 bg-emerald-50/80 p-2 rounded-xl border border-emerald-200">
-                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                <span>Schema.org RealEstateAgent &amp; Sitelinks: <strong>Active</strong></span>
-              </div>
-              <div className="flex items-center gap-2 text-emerald-700 bg-emerald-50/80 p-2 rounded-xl border border-emerald-200">
-                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                <span>XML Sitemap with Images: <strong>Configured</strong></span>
-              </div>
+          {/* Section 3: Pre-Configured SEO & Structured Data Status */}
+          <div className="bg-emerald-50/70 border border-emerald-200 rounded-xl p-4">
+            <div className="flex items-center gap-2 mb-3">
+              <ShieldCheck className="w-4 h-4 text-emerald-700" />
+              <h5 className="text-xs font-bold uppercase tracking-wider text-emerald-900">
+                Active Google Brand &amp; Structured Data Configuration
+              </h5>
             </div>
-
-            <div className="mt-3 pt-3 border-t border-slate-200 flex flex-wrap items-center justify-between gap-2 text-xs">
-              <a
-                href="https://search.google.com/test/rich-results?url=https%3A%2F%2Frd-infra.in"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-[#0A4D92] hover:text-blue-800 font-bold flex items-center gap-1.5 transition-colors"
-              >
-                <Sparkles className="w-3.5 h-3.5 text-blue-600" />
-                <span>Test Google Rich Results for rd-infra.in</span>
-                <ExternalLink className="w-3 h-3" />
-              </a>
-
-              <a
-                href="/robots.txt"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-slate-600 hover:text-slate-900 font-semibold flex items-center gap-1 transition-colors"
-              >
-                <span>Inspect robots.txt</span>
-                <ExternalLink className="w-3 h-3" />
-              </a>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 text-xs text-slate-700">
+              <div className="flex items-center gap-2 bg-white p-2.5 rounded-lg border border-emerald-100">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                <span><strong>Website Name:</strong> RD INFRA</span>
+              </div>
+              <div className="flex items-center gap-2 bg-white p-2.5 rounded-lg border border-emerald-100">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                <span><strong>WebSite Schema:</strong> RD INFRA</span>
+              </div>
+              <div className="flex items-center gap-2 bg-white p-2.5 rounded-lg border border-emerald-100">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                <span><strong>Organization Schema:</strong> RD INFRA</span>
+              </div>
+              <div className="flex items-center gap-2 bg-white p-2.5 rounded-lg border border-emerald-100">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                <span><strong>Favicon &amp; Logo:</strong> /logo.jpg</span>
+              </div>
+              <div className="flex items-center gap-2 bg-white p-2.5 rounded-lg border border-emerald-100">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                <span><strong>XML Sitemap:</strong> <a href="/sitemap.xml" target="_blank" rel="noopener noreferrer" className="text-[#0A4D92] underline">/sitemap.xml</a></span>
+              </div>
+              <div className="flex items-center gap-2 bg-white p-2.5 rounded-lg border border-emerald-100">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                <span><strong>Robots.txt:</strong> <a href={robotsUrl} target="_blank" rel="noopener noreferrer" className="text-[#0A4D92] underline">/robots.txt</a></span>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Modal Footer */}
-        <div className="p-4 sm:p-5 bg-slate-50 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <div className="text-xs text-slate-500">
-            Domain: <strong className="text-slate-700">https://{domain}</strong> • Googlebot Crawler Enabled
-          </div>
+        {/* Footer Actions */}
+        <div className="bg-slate-50 px-6 py-4 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-3 shrink-0">
+          <a
+            href={`https://search.google.com/test/rich-results?url=${encodeURIComponent(websiteUrl)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-xs font-semibold text-[#0A4D92] hover:underline flex items-center gap-1.5"
+          >
+            <span>Test Rich Results for {domain}</span>
+            <ExternalLink className="w-3.5 h-3.5" />
+          </a>
 
-          <div className="flex items-center gap-2 w-full sm:w-auto">
+          <div className="flex items-center gap-3 w-full sm:w-auto justify-end">
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-4 py-2 rounded-xl border border-slate-300 text-slate-700 text-xs font-bold hover:bg-slate-100 transition-colors cursor-pointer"
+            >
+              Close
+            </button>
             <a
               href="https://search.google.com/search-console"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex-1 sm:flex-none px-4 py-2 rounded-xl bg-[#0A4D92] hover:bg-blue-700 text-white font-bold text-xs transition-colors flex items-center justify-center gap-1.5"
+              className="px-5 py-2 rounded-xl bg-[#0A4D92] hover:bg-blue-800 text-white text-xs font-bold flex items-center gap-1.5 shadow-sm transition-colors"
             >
               <span>Launch Google Search Console</span>
               <ExternalLink className="w-3.5 h-3.5" />
             </a>
-            <button
-              type="button"
-              onClick={onClose}
-              className="px-4 py-2 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold text-xs transition-colors cursor-pointer"
-            >
-              Close
-            </button>
           </div>
         </div>
       </div>

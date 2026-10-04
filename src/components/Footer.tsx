@@ -1,5 +1,5 @@
 import React from 'react';
-import { Phone, Mail, MapPin, Shield, Sparkles, ExternalLink, Lock, Search } from 'lucide-react';
+import { Phone, Mail, MapPin, Shield, Sparkles, ExternalLink, Lock, Globe } from 'lucide-react';
 import { SiteSettings } from '../types';
 import { RDInfraLogo } from './RDInfraLogo';
 
@@ -9,7 +9,7 @@ interface FooterProps {
   onOpenAdmin: () => void;
   onOpenXamppGuide: () => void;
   onOpenBrandPresentation?: () => void;
-  onOpenGooglePublish?: () => void;
+  onOpenGoogleConsole?: () => void;
 }
 
 export const Footer: React.FC<FooterProps> = ({
@@ -18,7 +18,7 @@ export const Footer: React.FC<FooterProps> = ({
   onOpenAdmin,
   onOpenXamppGuide,
   onOpenBrandPresentation,
-  onOpenGooglePublish,
+  onOpenGoogleConsole,
 }) => {
   return (
     <footer className="bg-slate-950 text-white border-t border-slate-800">
@@ -189,14 +189,14 @@ export const Footer: React.FC<FooterProps> = ({
           <p>© {new Date().getFullYear()} RD INFRA ({settings.domain}). All rights reserved. “Building Better Tomorrows”.</p>
           
           <div className="flex items-center space-x-4">
-            {onOpenGooglePublish && (
+            {onOpenGoogleConsole && (
               <>
                 <button
-                  onClick={onOpenGooglePublish}
-                  className="flex items-center gap-1.5 text-blue-400 hover:text-blue-300 transition-colors cursor-pointer font-semibold"
+                  onClick={onOpenGoogleConsole}
+                  className="flex items-center gap-1.5 text-emerald-400 hover:text-emerald-300 transition-colors cursor-pointer font-semibold"
                 >
-                  <Search className="w-3.5 h-3.5 text-blue-400" />
-                  <span>Publish to Google</span>
+                  <Globe className="w-3.5 h-3.5" />
+                  <span>Google Search Console</span>
                 </button>
                 <span>•</span>
               </>

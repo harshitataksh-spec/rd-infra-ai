@@ -3,12 +3,12 @@
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://rd-infra.in/</loc>
-    <lastmod>2026-10-01</lastmod>
+    <lastmod>2026-10-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
     <image:image>
       <image:loc>https://rd-infra.in/logo.jpg</image:loc>
-      <image:title>RD INFRA Official Logo</image:title>
+      <image:title>RD INFRA</image:title>
       <image:caption>RD INFRA – Building Better Tomorrows</image:caption>
     </image:image>
   </url>

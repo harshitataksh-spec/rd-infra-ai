@@ -425,34 +425,41 @@ export default function App() {
   // If Admin Dashboard is active, render the dedicated restricted admin portal
   if (isAdminOpen) {
     return (
-      <AdminDashboard
-        initialTab={adminTab}
-        properties={properties}
-        onUpdateProperties={setProperties}
-        leads={leads}
-        onUpdateLeads={setLeads}
-        projects={projects}
-        upcomingProjects={upcomingProjects}
-        testimonials={testimonials}
-        enquiries={enquiries}
-        settings={settings}
-        directorProfile={directorProfile}
-        activityLogs={activityLogs}
-        onUpdateProjects={setProjects}
-        onUpdateUpcoming={setUpcomingProjects}
-        onUpdateTestimonials={setTestimonials}
-        onUpdateEnquiries={setEnquiries}
-        onUpdateSettings={setSettings}
-        onUpdateDirectorProfile={handleUpdateDirectorProfile}
-        onAddActivityLog={handleAddActivityLog}
-        onExitAdmin={() => {
-          setIsAdminOpen(false);
-          setAdminTab('overview');
-          window.history.replaceState(null, '', window.location.pathname === '/admin/director-profile' ? '/' : ' ');
-        }}
-        onOpenXamppGuide={() => setIsXamppModalOpen(true)}
-        onOpenGooglePublish={() => setIsGoogleModalOpen(true)}
-      />
+      <>
+        <AdminDashboard
+          initialTab={adminTab}
+          properties={properties}
+          onUpdateProperties={setProperties}
+          leads={leads}
+          onUpdateLeads={setLeads}
+          projects={projects}
+          upcomingProjects={upcomingProjects}
+          testimonials={testimonials}
+          enquiries={enquiries}
+          settings={settings}
+          directorProfile={directorProfile}
+          activityLogs={activityLogs}
+          onUpdateProjects={setProjects}
+          onUpdateUpcoming={setUpcomingProjects}
+          onUpdateTestimonials={setTestimonials}
+          onUpdateEnquiries={setEnquiries}
+          onUpdateSettings={setSettings}
+          onUpdateDirectorProfile={handleUpdateDirectorProfile}
+          onAddActivityLog={handleAddActivityLog}
+          onExitAdmin={() => {
+            setIsAdminOpen(false);
+            setAdminTab('overview');
+            window.history.replaceState(null, '', window.location.pathname === '/admin/director-profile' ? '/' : ' ');
+          }}
+          onOpenXamppGuide={() => setIsXamppModalOpen(true)}
+          onOpenGoogleConsole={() => setIsGoogleModalOpen(true)}
+        />
+        <GooglePublishModal
+          isOpen={isGoogleModalOpen}
+          onClose={() => setIsGoogleModalOpen(false)}
+          domain={settings.domain || 'rd-infra.in'}
+        />
+      </>
     );
   }
 
@@ -468,7 +475,7 @@ export default function App() {
         onOpenAdmin={() => setIsAdminOpen(true)}
         onOpenXamppGuide={() => setIsXamppModalOpen(true)}
         onOpenBrandPresentation={() => setIsBrandModalOpen(true)}
-        onOpenGooglePublish={() => setIsGoogleModalOpen(true)}
+        onOpenGoogleConsole={() => setIsGoogleModalOpen(true)}
       />
 
       {/* 1. Home / Hero & Search Section */}
@@ -602,7 +609,7 @@ export default function App() {
         onOpenAdmin={() => setIsAdminOpen(true)}
         onOpenXamppGuide={() => setIsXamppModalOpen(true)}
         onOpenBrandPresentation={() => setIsBrandModalOpen(true)}
-        onOpenGooglePublish={() => setIsGoogleModalOpen(true)}
+        onOpenGoogleConsole={() => setIsGoogleModalOpen(true)}
       />
 
       {/* Floating Action Buttons (Phone, WhatsApp, Scroll to top) */}
@@ -640,11 +647,11 @@ export default function App() {
         onClose={() => setIsXamppModalOpen(false)}
       />
 
-      {/* Google Search Console & SEO Indexing Modal */}
+      {/* Google Search Console & Brand Indexing Modal */}
       <GooglePublishModal
         isOpen={isGoogleModalOpen}
         onClose={() => setIsGoogleModalOpen(false)}
-        domain={settings.domain}
+        domain={settings.domain || 'rd-infra.in'}
       />
     </div>
   );

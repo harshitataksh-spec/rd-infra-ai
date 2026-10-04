@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Phone, MessageSquare, Menu, X, ArrowRight, Sparkles, ExternalLink, Lock, Search } from 'lucide-react';
+import { Phone, MessageSquare, Menu, X, ArrowRight, Sparkles, ExternalLink, Lock, Globe } from 'lucide-react';
 import { SiteSettings } from '../types';
 import { RDInfraLogo } from './RDInfraLogo';
 
@@ -11,7 +11,7 @@ interface NavbarProps {
   onOpenAdmin: () => void;
   onOpenXamppGuide: () => void;
   onOpenBrandPresentation?: () => void;
-  onOpenGooglePublish?: () => void;
+  onOpenGoogleConsole?: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -22,7 +22,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenAdmin,
   onOpenXamppGuide,
   onOpenBrandPresentation,
-  onOpenGooglePublish,
+  onOpenGoogleConsole,
 }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -105,16 +105,16 @@ export const Navbar: React.FC<NavbarProps> = ({
                 </button>
               </>
             )}
-            {onOpenGooglePublish && (
+            {onOpenGoogleConsole && (
               <>
                 <span className="text-slate-300">|</span>
                 <button
-                  onClick={onOpenGooglePublish}
-                  className="text-xs font-semibold text-blue-700 hover:text-blue-900 transition-colors cursor-pointer flex items-center gap-1 px-2 py-0.5 rounded-lg hover:bg-blue-50"
-                  title="Publish to Google / Search Console"
+                  onClick={onOpenGoogleConsole}
+                  className="text-xs font-semibold text-emerald-700 hover:text-emerald-800 transition-colors cursor-pointer flex items-center gap-1 px-2 py-0.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 border border-emerald-200"
+                  title="Google Search Console & SEO Indexing"
                 >
-                  <Search className="w-3 h-3 text-blue-600" />
-                  <span>Google SEO</span>
+                  <Globe className="w-3 h-3 text-emerald-600" />
+                  <span>Google Console</span>
                 </button>
               </>
             )}
@@ -290,16 +290,16 @@ export const Navbar: React.FC<NavbarProps> = ({
               <ExternalLink className="w-3 h-3" />
             </a>
 
-            {onOpenGooglePublish && (
+            {onOpenGoogleConsole && (
               <button
                 onClick={() => {
                   setMobileMenuOpen(false);
-                  onOpenGooglePublish();
+                  onOpenGoogleConsole();
                 }}
-                className="w-full py-2.5 px-3 rounded-xl text-xs font-bold text-blue-800 bg-blue-50 hover:bg-blue-100 border border-blue-200 text-center flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                className="w-full py-2.5 px-3 rounded-xl text-xs font-bold text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-center flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
               >
-                <Search className="w-3.5 h-3.5 text-blue-600" />
-                <span>Publish to Google Search</span>
+                <Globe className="w-3.5 h-3.5 text-emerald-600" />
+                <span>Google Search Console &amp; SEO</span>
               </button>
             )}
 

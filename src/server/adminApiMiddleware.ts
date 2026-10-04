@@ -241,6 +241,26 @@ export function adminApiPlugin(): Plugin {
         const fullUrl = req.url || '';
         const url = fullUrl.split('?')[0];
 
+        // Serve Google Search Console HTML verification files directly without Vite script injection
+        if (url === '/googlecc57c600f52289c8.html') {
+          res.statusCode = 200;
+          res.setHeader('Content-Type', 'text/html; charset=utf-8');
+          res.end('google-site-verification: googlecc57c600f52289c8.html');
+          return;
+        }
+        if (url === '/googlee4qefdr33c2pRgmvRPtpjhGoBCjeftWqDMlAkTZAEyM.html') {
+          res.statusCode = 200;
+          res.setHeader('Content-Type', 'text/html; charset=utf-8');
+          res.end('google-site-verification: googlee4qefdr33c2pRgmvRPtpjhGoBCjeftWqDMlAkTZAEyM.html');
+          return;
+        }
+        if (url === '/googlexkbfQKckJzjcLrNwpxbzZlomzbQ_sinVkzvVl83WGiE.html') {
+          res.statusCode = 200;
+          res.setHeader('Content-Type', 'text/html; charset=utf-8');
+          res.end('google-site-verification: googlexkbfQKckJzjcLrNwpxbzZlomzbQ_sinVkzvVl83WGiE.html');
+          return;
+        }
+
         // Only intercept /api/* routes
         if (!url.startsWith('/api/')) {
           return next();

@@ -103,7 +103,7 @@ export const AdminDirectorProfile: React.FC<AdminDirectorProfileProps> = ({
   currentAdmin,
   initialProfile,
   onSaveProfile,
-  onCancel: _onCancel,
+  onCancel,
   onRegisterUnsavedChanges,
 }) => {
   // Local form state with all new and editable fields

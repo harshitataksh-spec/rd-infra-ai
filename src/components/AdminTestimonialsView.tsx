@@ -35,9 +35,9 @@ export const AdminTestimonialsView: React.FC<AdminTestimonialsViewProps> = ({
   const handleOpenEdit = (idx: number) => {
     const t = testimonials[idx];
     setEditingIndex(idx);
-    setName(t.name);
-    setRole(t.role);
-    setComment(t.comment);
+    setName(t.name || t.customer_name || '');
+    setRole(t.role || t.location_tag || '');
+    setComment(t.comment || t.testimonial || '');
     setRating(t.rating || 5);
     setPropertyType(t.propertyType || 'Residential');
     setIsFormOpen(true);
@@ -45,10 +45,11 @@ export const AdminTestimonialsView: React.FC<AdminTestimonialsViewProps> = ({
 
   const handleDelete = (idx: number) => {
     const t = testimonials[idx];
-    if (confirm(`Remove testimonial from "${t.name}"?`)) {
+    const clientName = t.name || t.customer_name || 'Client';
+    if (confirm(`Remove testimonial from "${clientName}"?`)) {
       const next = testimonials.filter((_, i) => i !== idx);
       onUpdateTestimonials(next);
-      onAddActivityLog('Deleted Testimonial', `Testimonial by ${t.name} removed`);
+      onAddActivityLog('Deleted Testimonial', `Testimonial by ${clientName} removed`);
     }
   };
 
@@ -58,11 +59,15 @@ export const AdminTestimonialsView: React.FC<AdminTestimonialsViewProps> = ({
 
     const newTestimonial: Testimonial = {
       id: editingIndex !== null ? testimonials[editingIndex].id : Date.now(),
+      customer_name: name.trim(),
       name: name.trim(),
       role: role.trim() || 'Valued Client',
+      location_tag: role.trim() || 'Valued Client',
+      testimonial: comment.trim(),
       comment: comment.trim(),
       rating,
       propertyType,
+      status: 'published',
     };
 
     let next: Testimonial[];
