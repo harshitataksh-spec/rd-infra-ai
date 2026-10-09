@@ -293,7 +293,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       return;
     }
 
-    // Passcode for Admin 1 (ravinder deswal 001) is "rdinfra@2026"
+    // Passcode for Admin 1 (ravinder deswal 001) is "rdinfra2026"
     const isAdmin1 =
       selectedAdminId === '001' ||
       inputId === '001' ||
@@ -308,7 +308,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       inputId === '';
 
     if (isAdmin1) {
-      if (inputPasscode === 'rdinfra@2026') {
+      if (inputPasscode === 'rdinfra2026') {
         const admin1 = authorizedUsers[0];
         setIsAuthenticated(true);
         setCurrentAdmin(admin1);
@@ -334,7 +334,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         u.email.toLowerCase() === inputId
     );
 
-    if (otherAdmin && (inputPasscode === 'rdinfra@2026' || inputPasscode === 'admin123')) {
+    if (otherAdmin && (inputPasscode === 'rdinfra2026' || inputPasscode === 'admin123')) {
       setIsAuthenticated(true);
       setCurrentAdmin(otherAdmin);
       try {
@@ -348,7 +348,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     }
 
     // Universal unlock if authorized passcode is entered
-    if (inputPasscode === 'rdinfra@2026') {
+    if (inputPasscode === 'rdinfra2026') {
       const admin1 = authorizedUsers[0];
       setIsAuthenticated(true);
       setCurrentAdmin(admin1);

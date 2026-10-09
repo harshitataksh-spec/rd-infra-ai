@@ -260,7 +260,7 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({
                       </div>
                       <button
                         type="button"
-                        onClick={() => handleQuickFill('ravinder@rd-infra.in', 'Admin@RD2026')}
+                        onClick={() => handleQuickFill('ravinder@rd-infra.in', 'rdinfra2026')}
                         className="text-[10px] bg-[#0A4D92] hover:bg-blue-600 text-white px-2 py-1 rounded transition-colors"
                       >
                         Autofill
@@ -274,7 +274,7 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({
                       </div>
                       <button
                         type="button"
-                        onClick={() => handleQuickFill('operations@rd-infra.in', 'Admin@RD2026')}
+                        onClick={() => handleQuickFill('operations@rd-infra.in', 'rdinfra2026')}
                         className="text-[10px] bg-slate-800 hover:bg-slate-700 text-slate-200 px-2 py-1 rounded transition-colors"
                       >
                         Autofill
@@ -288,7 +288,7 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({
                       </div>
                       <button
                         type="button"
-                        onClick={() => handleQuickFill('editor@rd-infra.in', 'Admin@RD2026')}
+                        onClick={() => handleQuickFill('editor@rd-infra.in', 'rdinfra2026')}
                         className="text-[10px] bg-slate-800 hover:bg-slate-700 text-slate-200 px-2 py-1 rounded transition-colors"
                       >
                         Autofill

