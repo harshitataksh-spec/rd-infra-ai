@@ -138,6 +138,7 @@ export default function App() {
         return {
           ...defaultSiteSettings,
           ...parsed,
+          domain: 'rd-infra.in',
           logo_url: defaultSiteSettings.logo_url,
           canva_logo_link: 'https://canva.link/ko5bhxv1zaasyoe',
         };

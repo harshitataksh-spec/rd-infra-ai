@@ -120,36 +120,11 @@
         {
           "@type": "ListItem",
           "position": 1,
-          "name": "RD INFRA",
+          "name": "rd-infra.in",
           "item": "https://rd-infra.in/"
         }
       ]
     }
-    </script>
-    <script>
-      (function () {
-        try {
-          var origin = window.location.origin;
-          if (origin && origin.indexOf('http') === 0) {
-            var siteUrl = origin + '/';
-            var canonical = document.getElementById('canonical-link');
-            if (canonical) canonical.setAttribute('href', siteUrl);
-            var ogUrl = document.getElementById('og-url-meta');
-            if (ogUrl) ogUrl.setAttribute('content', siteUrl);
-            var ws = document.getElementById('schema-website');
-            if (ws) {
-              ws.textContent = JSON.stringify({
-                "@context": "https://schema.org",
-                "@type": "WebSite",
-                "@id": siteUrl + "#website",
-                "name": "RD INFRA",
-                "alternateName": ["RD INFRA", "rd-infra", "rd-infra.in"],
-                "url": siteUrl
-              });
-            }
-          }
-        } catch (e) {}
-      })();
     </script>
   </head>
   <body class="bg-slate-50 text-slate-800 antialiased selection:bg-blue-600 selection:text-white">
